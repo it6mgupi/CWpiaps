@@ -7,7 +7,7 @@
     <ProjectGuid>{DA3E36AA-275B-4804-90AD-80E5A040A024}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ApplicationIcon />
+    <ApplicationIcon>mainserv.ico</ApplicationIcon>
     <AssemblyKeyContainerName />
     <AssemblyName>TransactServ</AssemblyName>
     <AssemblyOriginatorKeyFile />
@@ -94,7 +94,7 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="server.cs">
+    <Compile Include="Server.cs">
       <SubType>Code</SubType>
     </Compile>
     <None Include="app.config">
@@ -107,6 +107,15 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="TransactLib\TransactLib.csproj">
+      <Project>{8f5fdb2e-b937-4b77-ae7f-be9522dc6be5}</Project>
+      <Name>TransactLib</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="mainserv.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

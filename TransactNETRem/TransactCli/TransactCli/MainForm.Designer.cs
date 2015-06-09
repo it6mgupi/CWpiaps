@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.MenuGBox = new System.Windows.Forms.GroupBox();
             this.ReqCashBtn = new System.Windows.Forms.Button();
             this.CancelChBtn = new System.Windows.Forms.Button();
@@ -49,7 +50,7 @@
             this.ModifyBtn = new System.Windows.Forms.Button();
             this.AddBtn = new System.Windows.Forms.Button();
             this.CurrObjGBox = new System.Windows.Forms.GroupBox();
-            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.ObjectList = new System.Windows.Forms.ListBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.ExportLogBtn = new System.Windows.Forms.Button();
             this.AppConsoleTV = new System.Windows.Forms.RichTextBox();
@@ -254,7 +255,7 @@
             // 
             // CurrObjGBox
             // 
-            this.CurrObjGBox.Controls.Add(this.listBox1);
+            this.CurrObjGBox.Controls.Add(this.ObjectList);
             this.CurrObjGBox.Location = new System.Drawing.Point(441, 91);
             this.CurrObjGBox.Name = "CurrObjGBox";
             this.CurrObjGBox.Size = new System.Drawing.Size(182, 113);
@@ -262,13 +263,13 @@
             this.CurrObjGBox.TabStop = false;
             this.CurrObjGBox.Text = "Current objects";
             // 
-            // listBox1
+            // ObjectList
             // 
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(6, 19);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(170, 82);
-            this.listBox1.TabIndex = 0;
+            this.ObjectList.FormattingEnabled = true;
+            this.ObjectList.Location = new System.Drawing.Point(6, 19);
+            this.ObjectList.Name = "ObjectList";
+            this.ObjectList.Size = new System.Drawing.Size(170, 82);
+            this.ObjectList.TabIndex = 0;
             // 
             // groupBox1
             // 
@@ -308,6 +309,7 @@
             this.Controls.Add(this.CurrObjGBox);
             this.Controls.Add(this.ObjGBox);
             this.Controls.Add(this.MenuGBox);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.Text = "Remoting client";
             this.MenuGBox.ResumeLayout(false);
@@ -327,7 +329,7 @@
         private System.Windows.Forms.Button SaveChBtn;
         private System.Windows.Forms.Button ReqCashBtn;
         private System.Windows.Forms.GroupBox CurrObjGBox;
-        private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.ListBox ObjectList;
         private System.Windows.Forms.Button RemoveBtn;
         private System.Windows.Forms.Button ModifyBtn;
         private System.Windows.Forms.Button AddBtn;

@@ -7,29 +7,32 @@ namespace TransactLib
 {
    public class TransactWKOSC : MarshalByRefObject
    {
+        string mod;
         public TransactWKOSC()
 	    {
-           Console.WriteLine("WKO SingleCall constructor called");
+            mod = "WKOSingleCall";
+            Logger.Info("WKO SingleCall constructor called ",mod);
         }
-		public int Commit(TransactCAO trans){
+
+        #region Functional module
+        public void Commit(TransactCAO CAO, TransactWKOST WKOST){
 			try {
                 TransactWKOST PerStor = new TransactWKOST();
-				//if(trans.)
-				return 1;
+				//if(CAO.SourceRecDat = Perstor){  }
 			}
-			catch(InvalidCastException ex){
-				return 0;
+			catch(Exception ex){
+                Logger.Error(ex, mod);
 			}
 		}
 
-		public int Rollback(TransactCAO trans){
+		public void Rollback(TransactCAO CAO){
 			try {
-				trans.Clear();
-				return 1;
+				CAO.Clear();
 			}
 			catch(Exception ex){
-				return 0;
+                Logger.Error(ex, mod);
 			}
-		}
+        }
+       #endregion
    }
 }

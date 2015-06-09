@@ -5,18 +5,21 @@ using System.Collections.Generic;
 namespace TransactLib
 {
    public class TransactWKOST : MarshalByRefObject
-   { 
+   {
+       string mod;
+       List<RecordDataObject> RecordsData;
+
        public TransactWKOST()
 	   {
-           Console.WriteLine("WKO singleTon constructor called");
+           mod = "WKOSingleton";
+           Logger.Info("WKO Singleton constructor called", mod);
+
+           //Creating persistent (constant) object 
+           RecordsData = new List<RecordDataObject>();
        }
-	  // Persistent (constant) object 	
-	  List<RecordDataObject> RecordsData = new List<RecordDataObject>();
-	  // Creating object for CAO
-	  //recDat = GetPersistentData(RecordsData);
 	  
-	  public List<RecordDataObject> GetPersistentData(List<RecordDataObject> xt){
-			return xt;
+	  public List<RecordDataObject> GetPersistentData(){
+			return RecordsData;
 	  }
    }
 }

@@ -11,7 +11,8 @@ namespace TransactCli
     public partial class MainForm : Form
     {
         TransactCAO Transact;
-        string Name;
+        TransactWKOST WKOST;
+        string PName;
         string Salary;
         string Age;
         string ZIP;
@@ -19,12 +20,18 @@ namespace TransactCli
         string IndPlantNum;
 
         public void getInput() {
-            Name = NameInput.Text;
+            PName = NameInput.Text;
             Salary = SalaryInput.Text;
             Age = AgeInput.Text;
             ZIP = zipInput.Text;
             City = CityInput.Text;
             IndPlantNum = ipnInput.Text;
+        }
+
+        class MyRecord
+        {
+            public string UserName { get; set; }
+            public string UserId { get; set; }
         }
 
         public MainForm()
@@ -35,20 +42,32 @@ namespace TransactCli
 			string conffile = "TransactCli.exe.config";
 			RemotingConfiguration.Configure (conffile, false);
 
-
             Transact = new TransactCAO();
+            WKOST = new TransactWKOST();
 
 			int result;
+
+            AppConsoleTV.Text = AppConsoleTV.Text + "----Client application logging started----\n";
 
             // Adding new entries to log
 			AppConsoleTV.Text = AppConsoleTV.Text + "CAO called\n";
 			AppConsoleTV.Text = AppConsoleTV.Text + "Adding record\n";
-			result = Transact.CreateRecord("Testrec");
-			result = Transact.CreateRecord("testrecord2");
+            
+            result = Transact.CreateRecord("Testrec", "Testrec", "Testrec", "Testrec", "Testrec", "Testrec");
 			if (result == 1) {
 				AppConsoleTV.Text = AppConsoleTV.Text + "New record created\n";
 			}
-           // foreach () in Transact
+
+            ObjectList.DisplayMember = "UserName";
+            ObjectList.ValueMember = "UserId";
+
+            //foreach (RecordDataObject element in Transact.CurrentRecDat) {
+                ObjectList.Items.Add(new MyRecord
+                {
+                    UserName = "FooName",
+                    UserId = "FooId"
+                });
+           // }
         }
 
         // Saving current changes
@@ -57,7 +76,7 @@ namespace TransactCli
 			try
 			{
 				TransactWKOSC trWKO = new TransactWKOSC();
-				trWKO.Rollback(Transact);
+				trWKO.Commit(Transact, WKOST);
 				AppConsoleTV.Text = AppConsoleTV.Text + "Changes saved\n";
 			}
 			catch
@@ -81,7 +100,7 @@ namespace TransactCli
 		    }
         }
 
-        // Requesting transactional cashe
+        // Request transactional cashe
         private void ReqCashBtn_Click(object sender, EventArgs e)
         {
             string Answer;
@@ -91,32 +110,32 @@ namespace TransactCli
             AppConsoleTV.Text = AppConsoleTV.Text + Answer;
         }
 
-        // Creating new record
+        // Create new record
         private void AddBtn_Click(object sender, EventArgs e)
         {
             getInput();
             int result;
             AppConsoleTV.Text = AppConsoleTV.Text + "Creating new record...\n";
-            result = Transact.CreateRecord("1");
+            result = Transact.CreateRecord(PName, Salary, ZIP, City, Age, IndPlantNum);
             if (result == 1)
             {
-                AppConsoleTV.Text = AppConsoleTV.Text + "DELOK\n";
+                AppConsoleTV.Text = AppConsoleTV.Text + "New record created\n";
             }
         }
 
-        // Modifying existing record
+        // Modify existing record
         private void ModifyBtn_Click(object sender, EventArgs e)
         {
             int result;
             AppConsoleTV.Text = AppConsoleTV.Text + "Updating record...\n";
-            result = Transact.UpdateRecord("Supertest", 1);
+            result = Transact.UpdateRecord(1, PName, Salary, ZIP, City, Age, IndPlantNum);
             if (result == 1)
             {
-                AppConsoleTV.Text = AppConsoleTV.Text + "UPDOK\n";
+                AppConsoleTV.Text = AppConsoleTV.Text + "Record successfully modified\n";
             }
         }
 
-        // Deleting existing record
+        // Delete existing record
         private void RemoveBtn_Click(object sender, EventArgs e)
         {
             int result;
@@ -124,10 +143,11 @@ namespace TransactCli
             result = Transact.DeleteRecord(1);
             if (result == 1)
             {
-                AppConsoleTV.Text = AppConsoleTV.Text + "DELOK\n";
+                AppConsoleTV.Text = AppConsoleTV.Text + "Record successfully deleted\n";
             }
         }
 
+        // Export log to text file
         private void ExportLogBtn_Click(object sender, EventArgs e)
         {
 

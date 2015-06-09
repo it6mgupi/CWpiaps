@@ -6,52 +6,57 @@ namespace TransactLib
 {
    public class TransactCAO : MarshalByRefObject
    {
-	   
-	   	// Initializing global components
-		List<string> RecordsDataChangeTransaction;
+        #region Initializing global components
+        List<string> RecordsDataChangeTransaction;
+        public List<RecordDataObject> SourceRecDat;
+        public List<RecordDataObject> CurrentRecDat;
         TransactWKOST trwst;
-        List<RecordDataObject> recDat;
+        string mod;
+        #endregion
 
-
-        #region Creating temp objects to work with
+        #region Constructor, initializing objects
         public TransactCAO()
-		{ 
+		{
+            mod = "CAO";
 			// constructor implementation
-			Console.WriteLine("Constructor called");
+			Logger.Info("Constructor called ",mod);
             RecordsDataChangeTransaction = new List<string>();
             trwst = new TransactWKOST();
-            recDat = new List<RecordDataObject>(); 
-            recDat = trwst.GetPersistentData(recDat);
+            SourceRecDat = trwst.GetPersistentData();
+            CurrentRecDat = trwst.GetPersistentData();
         }
         #endregion
 
         #region Essential methods
-        public int CreateRecord(String rec){
+        public int CreateRecord(string pName, string pSalary, string pCity, string pZIP, string pAge, string pPlantNum)
+        {
 			try
 			{
                 int EntriesCount;
-                EntriesCount = recDat.Count;
-              //  recDat[EntriesCount].NewRec(rec);
-				int RDCTSize;
-				RDCTSize = RecordsDataChangeTransaction.Count;
-				RecordsDataChangeTransaction [RDCTSize] = rec; 
-				Console.WriteLine("Record " + RecordsDataChangeTransaction [RDCTSize] + " created");
-				return 1;
+                EntriesCount = CurrentRecDat.Count;
+                Logger.Info("Record "+pName + pSalary + pCity + pZIP + pAge + pPlantNum+" created",mod);
+                //CurrentRecDat;
+				RecordsDataChangeTransaction.Add("Record "+pName + pSalary + pCity + pZIP + pAge + pPlantNum+" created");
+                return 1;
 			}
 			catch(Exception ex){
-				return 0;
+                Logger.Error(ex,mod);
+                return 0;
 			}
 		}
 
-		public int UpdateRecord(String rec, int pos){
+        public int UpdateRecord(int pos, string pName, string pSalary, string pCity, string pZIP, string pAge, string pPlantNum)
+        {
 			try
 			{
-				//recDat[pos].UpdRec(rec,pos);
-				RecordsDataChangeTransaction.Add("Record at position updated");
-				Console.WriteLine("Record updated");
+				//CurrentRecDat[pos].UpdRec(rec,pos);
+				RecordsDataChangeTransaction.Add("Record at position "+ pos +" updated with "+pName + pSalary + pCity + pZIP + pAge + pPlantNum);
+                Console.WriteLine("Record at position updated with " + pName + pSalary + pCity + pZIP + pAge + pPlantNum);
+                Logger.Info("Record updated", mod);
 				return 1;
 			}
 			catch(Exception ex){
+                Logger.Error(ex, mod);
 				return 0;
 			}
 		}
@@ -59,50 +64,50 @@ namespace TransactLib
 		public int DeleteRecord(int pos){
 			try
 			{
-                string position;
-                //position = pos.ToString;
-                recDat[pos].DelRec(pos);
-				RecordsDataChangeTransaction.Add("Deleted object at position ");
-				Console.WriteLine("Record deleted");
+               //CurrentRecDat[pos].DelRec(pos);
+				RecordsDataChangeTransaction.Add("Deleted record at position " + pos.ToString());
+                Logger.Info("Deleted record at position " + pos.ToString(), mod);
 				return 1;
 			}
 			catch(Exception ex){
+                Logger.Error(ex, mod);
 				return 0;
 			}
 		}
 
         // Requesting CRUD cashe
 		public String RequestCacheRecords(){
-			try
-			{
-                String RetStrg = "Transactional cashe";
-                int i;
-                Console.WriteLine("Cashe requested");
-                Console.WriteLine("Current contains:");
-                for (i = 0; i<= RecordsDataChangeTransaction.Count; i++)
+            String RetStrg = "Transactional cashe";
+            int i;
+            Logger.Info("Cashe requested",mod);
+            Logger.Info("Current contains:",mod);
+            try
+            {
+                for (i = 0; i<= RecordsDataChangeTransaction.Count-1; i++)
                 {
-                    RetStrg = RetStrg + RecordsDataChangeTransaction[i];
-                    Console.WriteLine(RecordsDataChangeTransaction[i]);
+                    RetStrg = RetStrg + RecordsDataChangeTransaction[i] + "\n";
+                    Logger.Info(RecordsDataChangeTransaction[i], mod);
                 }
-				
 				return RetStrg;
 			}
 			catch(Exception ex){
-				throw new Exception("Cannot request transactional cashe",ex);
+                Logger.Error(ex, "Cannot request transactional cashe");
+                return "Error when requesting CRUD cashe\n";
 			}
 		}
 		
         // Clearing objects
-		public int Clear(){
+		public String Clear(){
 			try
 			{
-				recDat.Clear();
-				RecordsDataChangeTransaction.Add("Objects cleared ( transaction rolled back)");
-				Console.WriteLine("Objects cleared ( previoustransaction rolled back)");
-				return 1;
+				CurrentRecDat = SourceRecDat;
+                RecordsDataChangeTransaction.Clear();
+                Logger.Info("Objects cleared ( previous transaction rolled back)",mod);
+                return "Objects cleared ( previous transaction rolled back)";
 			}
 			catch(Exception ex){
-				return 0;
+                Logger.Error(ex, "Cannot clear objects");
+                return "Error when clearing objects\n";
 			}
 		}
 		#endregion

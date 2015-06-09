@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace TransactLib
 {
    [Serializable]
-   public class RecordDataObject
+   public class RecordDataObject : IEnumerable
    {
 	    int ID;
 		string Name;
@@ -15,6 +15,11 @@ namespace TransactLib
 		string ZIP;
 		string Age;
 		string IndPlantNumber;
+
+        public IEnumerator GetEnumerator()
+        {
+            return (IEnumerator)this;
+        }
 
 		public void NewRec(string pName, string pSalary, string pCity, string pZIP, string pAge, string pPlantNum ){
             Name = pName;
