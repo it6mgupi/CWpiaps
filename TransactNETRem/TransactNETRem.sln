@@ -1,0 +1,33 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.22823.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransactServ", "TransactServ.csproj", "{DA3E36AA-275B-4804-90AD-80E5A040A024}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransactLib", "TransactLib\TransactLib.csproj", "{8F5FDB2E-B937-4B77-AE7F-BE9522DC6BE5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransactCli", "TransactCli\TransactCli\TransactCli.csproj", "{5A5AE4F9-92CC-40B6-AFDD-AE1DE863BEFE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DA3E36AA-275B-4804-90AD-80E5A040A024}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA3E36AA-275B-4804-90AD-80E5A040A024}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA3E36AA-275B-4804-90AD-80E5A040A024}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA3E36AA-275B-4804-90AD-80E5A040A024}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F5FDB2E-B937-4B77-AE7F-BE9522DC6BE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F5FDB2E-B937-4B77-AE7F-BE9522DC6BE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F5FDB2E-B937-4B77-AE7F-BE9522DC6BE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F5FDB2E-B937-4B77-AE7F-BE9522DC6BE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A5AE4F9-92CC-40B6-AFDD-AE1DE863BEFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A5AE4F9-92CC-40B6-AFDD-AE1DE863BEFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A5AE4F9-92CC-40B6-AFDD-AE1DE863BEFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A5AE4F9-92CC-40B6-AFDD-AE1DE863BEFE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
