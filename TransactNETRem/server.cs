@@ -5,7 +5,6 @@ using System.Runtime.Remoting;
 using System.Runtime.InteropServices;
 using TransactLib;
 
-
 namespace TransactServer
 {
     class ServerMain

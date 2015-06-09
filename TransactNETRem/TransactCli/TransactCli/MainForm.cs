@@ -42,32 +42,45 @@ namespace TransactCli
 			string conffile = "TransactCli.exe.config";
 			RemotingConfiguration.Configure (conffile, false);
 
-            Transact = new TransactCAO();
-            WKOST = new TransactWKOST();
+            try
+            {
+                Transact = new TransactCAO();
+                WKOST = new TransactWKOST();
 
-			int result;
+                int result;
 
-            AppConsoleTV.Text = AppConsoleTV.Text + "----Client application logging started----\n";
+                AppConsoleTV.Text = AppConsoleTV.Text + "----Client application logging started----\n";
 
-            // Adding new entries to log
-			AppConsoleTV.Text = AppConsoleTV.Text + "CAO called\n";
-			AppConsoleTV.Text = AppConsoleTV.Text + "Adding record\n";
-            
-            result = Transact.CreateRecord("Testrec", "Testrec", "Testrec", "Testrec", "Testrec", "Testrec");
-			if (result == 1) {
-				AppConsoleTV.Text = AppConsoleTV.Text + "New record created\n";
-			}
+                // Adding new entries to log
+                AppConsoleTV.Text = AppConsoleTV.Text + "CAO called\n";
+                AppConsoleTV.Text = AppConsoleTV.Text + "Adding record\n";
 
-            ObjectList.DisplayMember = "UserName";
-            ObjectList.ValueMember = "UserId";
+                result = Transact.CreateRecord("Testrec", "Testrec", "Testrec", "Testrec", "Testrec", "Testrec");
+                if (result == 1)
+                {
+                    AppConsoleTV.Text = AppConsoleTV.Text + "New record created\n";
+                }
 
-            //foreach (RecordDataObject element in Transact.CurrentRecDat) {
+                ObjectList.DisplayMember = "UserName";
+                ObjectList.ValueMember = "UserId";
+
+                //foreach (RecordDataObject element in Transact.CurrentRecDat) {
                 ObjectList.Items.Add(new MyRecord
                 {
                     UserName = "FooName",
                     UserId = "FooId"
                 });
-           // }
+                // }
+
+            }
+            // если сервер не запущен           
+            catch (System.Net.WebException ex)
+            {
+                MessageBox.Show("ОШИБКА: сервер не запущен", ex.Message);
+                Close();
+            }
+            
+			
         }
 
         // Saving current changes

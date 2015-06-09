@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Net;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace TransactCli
@@ -16,7 +17,14 @@ namespace TransactCli
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+            try
+            {
+                Application.Run(new MainForm());
+            }
+            catch (System.ObjectDisposedException)
+            {
+                //
+            }
         }
     }
 }
