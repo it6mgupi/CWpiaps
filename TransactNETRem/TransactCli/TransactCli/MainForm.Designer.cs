@@ -270,6 +270,7 @@
             this.ObjectList.Name = "ObjectList";
             this.ObjectList.Size = new System.Drawing.Size(170, 82);
             this.ObjectList.TabIndex = 0;
+            this.ObjectList.SelectedIndexChanged += new System.EventHandler(this.ObjectList_SelectedIndexChanged);
             // 
             // groupBox1
             // 

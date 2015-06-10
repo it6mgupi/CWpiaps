@@ -19,7 +19,7 @@ namespace TransactLib
 		{
             mod = "CAO";
 			// constructor implementation
-			Logger.Info("Constructor called ",mod);
+			Logger.Info("Constructor called ", mod);
             RecordsDataChangeTransaction = new List<string>();
             trwst = new TransactWKOST();
             SourceRecDat = trwst.GetPersistentData();
@@ -35,7 +35,8 @@ namespace TransactLib
                 int EntriesCount;
                 EntriesCount = CurrentRecDat.Count;
                 Logger.Info("Record "+pName + pSalary + pCity + pZIP + pAge + pPlantNum+" created",mod);
-                //CurrentRecDat;
+                CurrentRecDat.Add(new RecordDataObject());
+                CurrentRecDat[EntriesCount].SetRec(pName,pSalary,pCity,pZIP,pAge,pPlantNum);
 				RecordsDataChangeTransaction.Add("Record "+pName + pSalary + pCity + pZIP + pAge + pPlantNum+" created");
                 return 1;
 			}
@@ -49,7 +50,7 @@ namespace TransactLib
         {
 			try
 			{
-				//CurrentRecDat[pos].UpdRec(rec,pos);
+                CurrentRecDat[pos].SetRec(pName, pSalary, pCity, pZIP, pAge, pPlantNum);
 				RecordsDataChangeTransaction.Add("Record at position "+ pos +" updated with "+pName + pSalary + pCity + pZIP + pAge + pPlantNum);
                 Console.WriteLine("Record at position updated with " + pName + pSalary + pCity + pZIP + pAge + pPlantNum);
                 Logger.Info("Record updated", mod);
@@ -64,7 +65,7 @@ namespace TransactLib
 		public int DeleteRecord(int pos){
 			try
 			{
-               //CurrentRecDat[pos].DelRec(pos);
+                CurrentRecDat.RemoveAt(pos);
 				RecordsDataChangeTransaction.Add("Deleted record at position " + pos.ToString());
                 Logger.Info("Deleted record at position " + pos.ToString(), mod);
 				return 1;
@@ -91,7 +92,7 @@ namespace TransactLib
 				return RetStrg;
 			}
 			catch(Exception ex){
-                Logger.Error(ex, "Cannot request transactional cashe");
+                Logger.Error(ex, "Cannot request CRUD cashe");
                 return "Error when requesting CRUD cashe\n";
 			}
 		}
@@ -100,6 +101,7 @@ namespace TransactLib
 		public String Clear(){
 			try
 			{
+                CurrentRecDat.Clear();
 				CurrentRecDat = SourceRecDat;
                 RecordsDataChangeTransaction.Clear();
                 Logger.Info("Objects cleared ( previous transaction rolled back)",mod);

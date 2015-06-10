@@ -4,6 +4,8 @@ using System.IO;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Runtime.Remoting;
+using System.Runtime.Remoting.Channels;
+using System.Runtime.Remoting.Channels.Ipc;
 using TransactLib;
 
 namespace TransactCli
@@ -18,21 +20,7 @@ namespace TransactCli
         string ZIP;
         string City;
         string IndPlantNum;
-
-        public void getInput() {
-            PName = NameInput.Text;
-            Salary = SalaryInput.Text;
-            Age = AgeInput.Text;
-            ZIP = zipInput.Text;
-            City = CityInput.Text;
-            IndPlantNum = ipnInput.Text;
-        }
-
-        class MyRecord
-        {
-            public string UserName { get; set; }
-            public string UserId { get; set; }
-        }
+        IpcClientChannel channel;
 
         public MainForm()
         {
@@ -42,45 +30,66 @@ namespace TransactCli
 			string conffile = "TransactCli.exe.config";
 			RemotingConfiguration.Configure (conffile, false);
 
+            //Create an IPC client channel.
+            channel = new IpcClientChannel();
+
+            //Register the channel with ChannelServices.
+            ChannelServices.RegisterChannel(channel, true);
+
+            /*
+            //Register the client type.
+            RemotingConfiguration.RegisterWellKnownClientType(
+                                typeof(TransactLib.TransactWKOSC),
+                                "ipc://ServerChannel/ScURI.rem");*/
+
             try
-            {
+            { 
                 Transact = new TransactCAO();
                 WKOST = new TransactWKOST();
 
-                int result;
+			    int result;
 
                 AppConsoleTV.Text = AppConsoleTV.Text + "----Client application logging started----\n";
 
                 // Adding new entries to log
-                AppConsoleTV.Text = AppConsoleTV.Text + "CAO called\n";
-                AppConsoleTV.Text = AppConsoleTV.Text + "Adding record\n";
-
+			    AppConsoleTV.Text = AppConsoleTV.Text + "CAO called\n";
+			    AppConsoleTV.Text = AppConsoleTV.Text + "Adding record\n";
+            
                 result = Transact.CreateRecord("Testrec", "Testrec", "Testrec", "Testrec", "Testrec", "Testrec");
-                if (result == 1)
-                {
-                    AppConsoleTV.Text = AppConsoleTV.Text + "New record created\n";
-                }
+			    if (result == 1) {
+				     AppConsoleTV.Text = AppConsoleTV.Text + "New record created\n";
+			    }
 
-                ObjectList.DisplayMember = "UserName";
-                ObjectList.ValueMember = "UserId";
-
-                //foreach (RecordDataObject element in Transact.CurrentRecDat) {
-                ObjectList.Items.Add(new MyRecord
-                {
-                    UserName = "FooName",
-                    UserId = "FooId"
-                });
-                // }
-
+                UpdateObjectsList();
             }
-            // если сервер не запущен           
+            // If a server is down for some reason          
             catch (System.Net.WebException ex)
             {
-                MessageBox.Show("ОШИБКА: сервер не запущен", ex.Message);
-                Close();
+                MessageBox.Show("Error: cannot connect to server: ", ex.Message);
+                this.Close();
             }
-            
-			
+        }
+
+        // Acquiring input from textBoxes in client
+        public void getInput()
+        {
+            PName = NameInput.Text;
+            Salary = SalaryInput.Text;
+            Age = AgeInput.Text;
+            ZIP = zipInput.Text;
+            City = CityInput.Text;
+            IndPlantNum = ipnInput.Text;
+        }
+
+        // Updating list of objects shown at client ListBox
+        public void UpdateObjectsList()
+        {
+            ObjectList.Items.Clear();
+
+            foreach (RecordDataObject element in Transact.CurrentRecDat)
+            {
+                ObjectList.Items.Add(element.getName());
+            }
         }
 
         // Saving current changes
@@ -92,9 +101,9 @@ namespace TransactCli
 				trWKO.Commit(Transact, WKOST);
 				AppConsoleTV.Text = AppConsoleTV.Text + "Changes saved\n";
 			}
-			catch
+            catch (RemotingException ex)
 			{
-				throw new Exception("Could not make commit\n");
+				throw new RemotingException("Could not make commit\n",ex);
 			}
         }
 
@@ -103,13 +112,17 @@ namespace TransactCli
         {
 			try
 		    {
-			    TransactWKOSC trWKO = new TransactWKOSC();
+
+                TransactWKOSC trWKO = (TransactWKOSC)Activator.GetObject(typeof(TransactWKOSC),
+                "ipc://ServerChannel/ScURI.rem");
+			    //TransactWKOSC trWKO = new TransactWKOSC();
 		        trWKO.Rollback(Transact);
 			    AppConsoleTV.Text = AppConsoleTV.Text + "Changes rolled back\n";
+                UpdateObjectsList();
 		    }
-		    catch
+		    catch(RemotingException ex)
 		    {
-			    throw new Exception("Error when rolling back");
+			    throw new RemotingException("Error when rolling back\n", ex);
 		    }
         }
 
@@ -133,6 +146,7 @@ namespace TransactCli
             if (result == 1)
             {
                 AppConsoleTV.Text = AppConsoleTV.Text + "New record created\n";
+                UpdateObjectsList();
             }
         }
 
@@ -141,10 +155,11 @@ namespace TransactCli
         {
             int result;
             AppConsoleTV.Text = AppConsoleTV.Text + "Updating record...\n";
-            result = Transact.UpdateRecord(1, PName, Salary, ZIP, City, Age, IndPlantNum);
+            result = Transact.UpdateRecord(ObjectList.SelectedIndex, PName, Salary, ZIP, City, Age, IndPlantNum);
             if (result == 1)
             {
                 AppConsoleTV.Text = AppConsoleTV.Text + "Record successfully modified\n";
+                UpdateObjectsList();
             }
         }
 
@@ -153,10 +168,11 @@ namespace TransactCli
         {
             int result;
             AppConsoleTV.Text = AppConsoleTV.Text + "Deleting record...\n";
-            result = Transact.DeleteRecord(1);
+            result = Transact.DeleteRecord(ObjectList.SelectedIndex);
             if (result == 1)
             {
                 AppConsoleTV.Text = AppConsoleTV.Text + "Record successfully deleted\n";
+                UpdateObjectsList();
             }
         }
 
@@ -177,6 +193,17 @@ namespace TransactCli
                 sw.Write(AppConsoleTV.Text);
                 sw.Close();
             }
+        }
+
+        // On each ListBoxIndex change, getting info on remote object
+        private void ObjectList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            NameInput.Text = Transact.CurrentRecDat[ObjectList.SelectedIndex].getName();
+            SalaryInput.Text = Transact.CurrentRecDat[ObjectList.SelectedIndex].getSalary();
+            AgeInput.Text = Transact.CurrentRecDat[ObjectList.SelectedIndex].getAge();
+            zipInput.Text = Transact.CurrentRecDat[ObjectList.SelectedIndex].getZIP();
+            CityInput.Text = Transact.CurrentRecDat[ObjectList.SelectedIndex].getCity();
+            ipnInput.Text = Transact.CurrentRecDat[ObjectList.SelectedIndex].getPlantNum();
         }
     }
 }

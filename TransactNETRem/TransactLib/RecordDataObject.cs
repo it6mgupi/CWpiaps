@@ -6,22 +6,17 @@ using System.Collections.Generic;
 namespace TransactLib
 {
    [Serializable]
-   public class RecordDataObject : IEnumerable
+   public class RecordDataObject
    {
-	    int ID;
-		string Name;
-		string Salary;
-		string City;
-		string ZIP;
-		string Age;
-		string IndPlantNumber;
+		string Name{ get; set; }
+        string Salary { get; set; }
+        string City { get; set; }
+        string ZIP { get; set; }
+        string Age { get; set; }
+        string IndPlantNumber { get; set; }
 
-        public IEnumerator GetEnumerator()
-        {
-            return (IEnumerator)this;
-        }
-
-		public void NewRec(string pName, string pSalary, string pCity, string pZIP, string pAge, string pPlantNum ){
+        #region Setter function
+        public void SetRec(string pName, string pSalary, string pCity, string pZIP, string pAge, string pPlantNum ){
             Name = pName;
             Salary = pSalary;
             City = pCity;
@@ -29,19 +24,15 @@ namespace TransactLib
             Age = pAge;
             IndPlantNumber = pPlantNum;
 		}
+        #endregion
 
-		public void UpdRec(int ID, string pName, string pSalary, string pCity, string pZIP, string pAge, string pPlantNum)
-        {
-            Name = pName;
-            Salary = pSalary;
-            City = pCity;
-            ZIP = pZIP;
-            Age = pAge;
-            IndPlantNumber = pPlantNum;
-		}
-		
-		public void DelRec(int ID){
-         
-        }
+        #region A bunch of getter functions
+        public string getName() { return Name; }
+        public string getSalary() { return Salary; }
+        public string getCity() { return City; }
+        public string getZIP() { return ZIP; }
+        public string getAge() { return Age; }
+        public string getPlantNum() { return IndPlantNumber; }
+        #endregion
    }
 }

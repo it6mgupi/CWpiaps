@@ -2,8 +2,11 @@ using System;
 using System.IO;
 using System.Diagnostics;
 using System.Runtime.Remoting;
+using System.Runtime.Remoting.Channels;
+using System.Runtime.Remoting.Channels.Ipc;
 using System.Runtime.InteropServices;
 using TransactLib;
+
 
 namespace TransactServer
 {
@@ -27,6 +30,18 @@ namespace TransactServer
             { 
                 Logger.Error("Cannot find Remoting configuration file ", mod); 
             }
+
+            //Init our server channel.
+            IpcServerChannel channel = new IpcServerChannel("ServerChannel");
+
+            //Register the server channel.
+            ChannelServices.RegisterChannel(channel, true);
+
+            //Register this service type.
+            RemotingConfiguration.RegisterWellKnownServiceType(
+                                        typeof(TransactLib.TransactWKOSC),
+                                        "ScURI.rem",
+                                        WellKnownObjectMode.Singleton);
 
             Logger.Info("-----------Server logger started-----------", mod);
 
