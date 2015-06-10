@@ -30,7 +30,7 @@ namespace TransactServer
             { 
                 Logger.Error("Cannot find Remoting configuration file ", mod); 
             }
-
+            
             //Init our server channel.
             IpcServerChannel channel = new IpcServerChannel("ServerChannel");
 
@@ -41,7 +41,7 @@ namespace TransactServer
             RemotingConfiguration.RegisterWellKnownServiceType(
                                         typeof(TransactLib.TransactWKOSC),
                                         "ScURI.rem",
-                                        WellKnownObjectMode.Singleton);
+                                        WellKnownObjectMode.SingleCall);//.Singleton);
 
             Logger.Info("-----------Server logger started-----------", mod);
 

@@ -7,6 +7,8 @@ using System.Runtime.Remoting;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Ipc;
 using TransactLib;
+using System.Collections;
+using System.Runtime.Serialization.Formatters;
 
 namespace TransactCli
 {
@@ -30,17 +32,28 @@ namespace TransactCli
 			string conffile = "TransactCli.exe.config";
 			RemotingConfiguration.Configure (conffile, false);
 
+
+            WellKnownClientTypeEntry typeentry =
+                        new WellKnownClientTypeEntry(typeof(TransactWKOSC),
+                        "ipc://ServerChannel/ScURI.rem");
+
+            typeentry.ApplicationUrl = "ipc://ServerChannel/ScURI.rem";
+
+            BinaryClientFormatterSinkProvider sinkprovider = new
+                                BinaryClientFormatterSinkProvider();
+            
+            IDictionary properties = new Hashtable();
+            properties["name"] = "TcpBinary";
+            properties["port"] = 0;
+
+            BinaryServerFormatterSinkProvider provider = new
+                                BinaryServerFormatterSinkProvider();
+
+            provider.TypeFilterLevel = TypeFilterLevel.Full;
+
             //Create an IPC client channel.
-            channel = new IpcClientChannel();
-
-            //Register the channel with ChannelServices.
+            channel = new IpcClientChannel(properties, sinkprovider);
             ChannelServices.RegisterChannel(channel, true);
-
-            /*
-            //Register the client type.
-            RemotingConfiguration.RegisterWellKnownClientType(
-                                typeof(TransactLib.TransactWKOSC),
-                                "ipc://ServerChannel/ScURI.rem");*/
 
             try
             { 
@@ -112,17 +125,15 @@ namespace TransactCli
         {
 			try
 		    {
+                TransactWKOSC m_Accessor = new TransactWKOSC();
+                m_Accessor.Rollback(Transact);
 
-                TransactWKOSC trWKO = (TransactWKOSC)Activator.GetObject(typeof(TransactWKOSC),
-                "ipc://ServerChannel/ScURI.rem");
-			    //TransactWKOSC trWKO = new TransactWKOSC();
-		        trWKO.Rollback(Transact);
 			    AppConsoleTV.Text = AppConsoleTV.Text + "Changes rolled back\n";
                 UpdateObjectsList();
 		    }
 		    catch(RemotingException ex)
 		    {
-			    throw new RemotingException("Error when rolling back\n", ex);
+			    throw new RemotingException("Error when rolling back\n"+ ex.Message, ex);
 		    }
         }
 

@@ -75,21 +75,21 @@
             // 
             // ReqCashBtn
             // 
-            this.ReqCashBtn.Location = new System.Drawing.Point(210, 20);
+            this.ReqCashBtn.Location = new System.Drawing.Point(473, 19);
             this.ReqCashBtn.Name = "ReqCashBtn";
-            this.ReqCashBtn.Size = new System.Drawing.Size(92, 23);
+            this.ReqCashBtn.Size = new System.Drawing.Size(132, 23);
             this.ReqCashBtn.TabIndex = 2;
-            this.ReqCashBtn.Text = "Request cashe";
+            this.ReqCashBtn.Text = "Request cache from CAO";
             this.ReqCashBtn.UseVisualStyleBackColor = true;
             this.ReqCashBtn.Click += new System.EventHandler(this.ReqCashBtn_Click);
             // 
             // CancelChBtn
             // 
-            this.CancelChBtn.Location = new System.Drawing.Point(101, 20);
+            this.CancelChBtn.Location = new System.Drawing.Point(239, 20);
             this.CancelChBtn.Name = "CancelChBtn";
             this.CancelChBtn.Size = new System.Drawing.Size(103, 23);
             this.CancelChBtn.TabIndex = 1;
-            this.CancelChBtn.Text = "Discard changes";
+            this.CancelChBtn.Text = "Rollback";
             this.CancelChBtn.UseVisualStyleBackColor = true;
             this.CancelChBtn.Click += new System.EventHandler(this.CancelChBtn_Click);
             // 
@@ -97,9 +97,9 @@
             // 
             this.SaveChBtn.Location = new System.Drawing.Point(7, 20);
             this.SaveChBtn.Name = "SaveChBtn";
-            this.SaveChBtn.Size = new System.Drawing.Size(88, 23);
+            this.SaveChBtn.Size = new System.Drawing.Size(226, 23);
             this.SaveChBtn.TabIndex = 0;
-            this.SaveChBtn.Text = "Save changes";
+            this.SaveChBtn.Text = "Commit from CAO to WKO Singleton";
             this.SaveChBtn.UseVisualStyleBackColor = true;
             this.SaveChBtn.Click += new System.EventHandler(this.SaveChBtn_Click);
             // 

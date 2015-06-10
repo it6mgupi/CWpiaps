@@ -34,10 +34,15 @@ namespace TransactLib
 			{
                 int EntriesCount;
                 EntriesCount = CurrentRecDat.Count;
-                Logger.Info("Record "+pName + pSalary + pCity + pZIP + pAge + pPlantNum+" created",mod);
+
+                string strOut = "Record " + pName + " " + pSalary + " " + pCity + " " + pZIP + " " + pAge + " " + 
+                    pPlantNum + " created";
+
+                Logger.Info(strOut, mod);
+
                 CurrentRecDat.Add(new RecordDataObject());
                 CurrentRecDat[EntriesCount].SetRec(pName,pSalary,pCity,pZIP,pAge,pPlantNum);
-				RecordsDataChangeTransaction.Add("Record "+pName + pSalary + pCity + pZIP + pAge + pPlantNum+" created");
+				RecordsDataChangeTransaction.Add(strOut);
                 return 1;
 			}
 			catch(Exception ex){
@@ -51,9 +56,12 @@ namespace TransactLib
 			try
 			{
                 CurrentRecDat[pos].SetRec(pName, pSalary, pCity, pZIP, pAge, pPlantNum);
-				RecordsDataChangeTransaction.Add("Record at position "+ pos +" updated with "+pName + pSalary + pCity + pZIP + pAge + pPlantNum);
+
+                RecordsDataChangeTransaction.Add("Record at position " + pos + " updated with " + pName + " " + pSalary + 
+                    " " + pCity + " " + pZIP + " " + pAge + " " + pPlantNum);
+
                 Console.WriteLine("Record at position updated with " + pName + pSalary + pCity + pZIP + pAge + pPlantNum);
-                Logger.Info("Record updated", mod);
+                Logger.Info("Record updated ", mod);
 				return 1;
 			}
 			catch(Exception ex){
@@ -78,10 +86,10 @@ namespace TransactLib
 
         // Requesting CRUD cashe
 		public String RequestCacheRecords(){
-            String RetStrg = "Transactional cashe";
+            String RetStrg = "Transactional cache ";
             int i;
-            Logger.Info("Cashe requested",mod);
-            Logger.Info("Current contains:",mod);
+            Logger.Info("Cache requested ",mod);
+            Logger.Info("Current contains: ",mod);
             try
             {
                 for (i = 0; i<= RecordsDataChangeTransaction.Count-1; i++)
@@ -92,8 +100,8 @@ namespace TransactLib
 				return RetStrg;
 			}
 			catch(Exception ex){
-                Logger.Error(ex, "Cannot request CRUD cashe");
-                return "Error when requesting CRUD cashe\n";
+                Logger.Error(ex, "Cannot request CRUD cache ");
+                return "Error when requesting CRUD cache \n";
 			}
 		}
 		
