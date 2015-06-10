@@ -15,9 +15,10 @@ namespace TransactLib
         }
 
         #region Functional module
-        public void Commit(TransactCAO CAO, TransactWKOST WKOST){
-			try {
-				//if(CAO.SourceRecDat = Perstor){  }
+        public void Commit(TransactCAO CAO){
+			try 
+            {
+                CAO.CopyListToPerStor();
 			}
 			catch(Exception ex){
                 Logger.Error(ex, mod);

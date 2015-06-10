@@ -110,13 +110,13 @@ namespace TransactCli
         {
 			try
 			{
-				TransactWKOSC trWKO = new TransactWKOSC();
-				trWKO.Commit(Transact, WKOST);
-				AppConsoleTV.Text = AppConsoleTV.Text + "Changes saved\n";
+                TransactWKOSC m_Accessor = new TransactWKOSC();
+                m_Accessor.Commit(Transact);
+				AppConsoleTV.Text = AppConsoleTV.Text + "Changes committed to persistent storage\n";
 			}
             catch (RemotingException ex)
 			{
-				throw new RemotingException("Could not make commit\n",ex);
+				throw new RemotingException("Could not make commit\n", ex);
 			}
         }
 
