@@ -15,7 +15,6 @@ namespace TransactCli
     public partial class MainForm : Form
     {
         TransactCAO Transact;
-        TransactWKOST WKOST;
         string PName;
         string Salary;
         string Age;
@@ -59,18 +58,11 @@ namespace TransactCli
             { 
                 Transact = new TransactCAO();
 
-			    int result;
-
                 AppConsoleTV.Text = AppConsoleTV.Text + "----Client application logging started----\n";
 
                 // Adding new entries to log
 			    AppConsoleTV.Text = AppConsoleTV.Text + "CAO called\n";
 			    AppConsoleTV.Text = AppConsoleTV.Text + "Adding record\n";
-            
-                result = Transact.CreateRecord("Testrec", "Testrec", "Testrec", "Testrec", "Testrec", "Testrec");
-			    if (result == 1) {
-				     AppConsoleTV.Text = AppConsoleTV.Text + "New record created\n";
-			    }
 
                 UpdateObjectsList();
             }

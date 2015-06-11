@@ -9,6 +9,11 @@ namespace TransactLib
         string mod;
         public List<RecordDataObject> RecordsData;
 
+        public override object InitializeLifetimeService()
+        {
+            return null;
+        }
+
         public TransactWKOST()
         {
             mod = "WKOSingleton";

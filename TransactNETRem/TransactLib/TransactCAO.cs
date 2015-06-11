@@ -20,8 +20,14 @@ namespace TransactLib
             // constructor implementation
             Logger.Info("Constructor called ", mod);
             RecordsDataChangeTransaction = new List<string>();
-            trwst = new TransactWKOST();
-            CurrentRecDat = trwst.GetPersistentData();
+            try
+            {
+                //TransactWKOST trwst = new TransactWKOST(); 
+                trwst = (TransactWKOST)Activator.GetObject(typeof(TransactWKOST), "http://localhost:13000/StURI.rem");
+                CurrentRecDat = trwst.GetPersistentData();
+            }
+            catch { //TransactWKOST trwst = new TransactWKOST(); //CurrentRecDat = trwst.GetPersistentData();
+            }
         }
         #endregion
 
@@ -43,7 +49,7 @@ namespace TransactLib
         }
 
         // Clearing objects
-        public String Clear()
+        public string Clear()
         {
             try
             {
