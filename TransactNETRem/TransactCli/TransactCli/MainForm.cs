@@ -32,7 +32,7 @@ namespace TransactCli
 			string conffile = "TransactCli.exe.config";
 			RemotingConfiguration.Configure (conffile, false);
 
-
+            // Registering client IPC Channel
             WellKnownClientTypeEntry typeentry =
                         new WellKnownClientTypeEntry(typeof(TransactWKOSC),
                         "ipc://ServerChannel/ScURI.rem");
@@ -58,7 +58,6 @@ namespace TransactCli
             try
             { 
                 Transact = new TransactCAO();
-                WKOST = new TransactWKOST();
 
 			    int result;
 
@@ -94,14 +93,33 @@ namespace TransactCli
             IndPlantNum = ipnInput.Text;
         }
 
+        // Cleaning client input fields
+        public void CleanInputFields() 
+        {
+            NameInput.Text = "";
+            SalaryInput.Text = "";
+            AgeInput.Text = "";
+            zipInput.Text = "";
+            CityInput.Text = "";
+            ipnInput.Text = "";
+        }
+
         // Updating list of objects shown at client ListBox
         public void UpdateObjectsList()
         {
+            CleanInputFields();
             ObjectList.Items.Clear();
-
-            foreach (RecordDataObject element in Transact.CurrentRecDat)
+            try
             {
-                ObjectList.Items.Add(element.getName());
+                foreach (RecordDataObject element in Transact.CurrentRecDat)
+                {
+                    ObjectList.Items.Add(element.getName());
+                }
+            }
+            catch(Exception ex) 
+            {
+                AppConsoleTV.Text = AppConsoleTV.Text + "Could not get current object\n";
+                throw new RemotingException("Could not make commit\n", ex);
             }
         }
 
@@ -113,6 +131,7 @@ namespace TransactCli
                 TransactWKOSC m_Accessor = new TransactWKOSC();
                 m_Accessor.Commit(Transact);
 				AppConsoleTV.Text = AppConsoleTV.Text + "Changes committed to persistent storage\n";
+                UpdateObjectsList();
 			}
             catch (RemotingException ex)
 			{
@@ -164,26 +183,41 @@ namespace TransactCli
         // Modify existing record
         private void ModifyBtn_Click(object sender, EventArgs e)
         {
-            int result;
-            AppConsoleTV.Text = AppConsoleTV.Text + "Updating record...\n";
-            result = Transact.UpdateRecord(ObjectList.SelectedIndex, PName, Salary, ZIP, City, Age, IndPlantNum);
-            if (result == 1)
+            if (ObjectList.SelectedIndex != -1)
             {
-                AppConsoleTV.Text = AppConsoleTV.Text + "Record successfully modified\n";
-                UpdateObjectsList();
+                getInput();
+                int result;
+                AppConsoleTV.Text = AppConsoleTV.Text + "Modifying record...\n";
+                result = Transact.UpdateRecord(ObjectList.SelectedIndex, PName, Salary, ZIP, City, Age, IndPlantNum);
+                if (result == 1)
+                {
+                    AppConsoleTV.Text = AppConsoleTV.Text + "Record successfully modified\n";
+                    UpdateObjectsList();
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select an Item first!");
             }
         }
 
         // Delete existing record
         private void RemoveBtn_Click(object sender, EventArgs e)
         {
-            int result;
-            AppConsoleTV.Text = AppConsoleTV.Text + "Deleting record...\n";
-            result = Transact.DeleteRecord(ObjectList.SelectedIndex);
-            if (result == 1)
+            if (ObjectList.SelectedIndex != -1)
             {
-                AppConsoleTV.Text = AppConsoleTV.Text + "Record successfully deleted\n";
-                UpdateObjectsList();
+                int result;
+                AppConsoleTV.Text = AppConsoleTV.Text + "Deleting record...\n";
+                result = Transact.DeleteRecord(ObjectList.SelectedIndex);
+                if (result == 1)
+                {
+                    AppConsoleTV.Text = AppConsoleTV.Text + "Record successfully deleted\n";
+                    UpdateObjectsList();
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select an Item first!");
             }
         }
 
@@ -209,12 +243,19 @@ namespace TransactCli
         // On each ListBoxIndex change, getting info on remote object
         private void ObjectList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            NameInput.Text = Transact.CurrentRecDat[ObjectList.SelectedIndex].getName();
-            SalaryInput.Text = Transact.CurrentRecDat[ObjectList.SelectedIndex].getSalary();
-            AgeInput.Text = Transact.CurrentRecDat[ObjectList.SelectedIndex].getAge();
-            zipInput.Text = Transact.CurrentRecDat[ObjectList.SelectedIndex].getZIP();
-            CityInput.Text = Transact.CurrentRecDat[ObjectList.SelectedIndex].getCity();
-            ipnInput.Text = Transact.CurrentRecDat[ObjectList.SelectedIndex].getPlantNum();
+            if (ObjectList.SelectedIndex != -1)
+            {
+                NameInput.Text = Transact.CurrentRecDat[ObjectList.SelectedIndex].getName();
+                SalaryInput.Text = Transact.CurrentRecDat[ObjectList.SelectedIndex].getSalary();
+                AgeInput.Text = Transact.CurrentRecDat[ObjectList.SelectedIndex].getAge();
+                zipInput.Text = Transact.CurrentRecDat[ObjectList.SelectedIndex].getZIP();
+                CityInput.Text = Transact.CurrentRecDat[ObjectList.SelectedIndex].getCity();
+                ipnInput.Text = Transact.CurrentRecDat[ObjectList.SelectedIndex].getPlantNum();
+            }
+            else
+            {
+                MessageBox.Show("Please select an Item first!");
+            }
         }
     }
 }

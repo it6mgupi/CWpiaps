@@ -4,12 +4,10 @@ using System.Collections.Generic;
 
 namespace TransactLib
 {
-    [Serializable]
     public class TransactCAO : MarshalByRefObject
     {
         #region Initializing global components
         List<string> RecordsDataChangeTransaction;
-        public List<RecordDataObject> SourceRecDat;
         public List<RecordDataObject> CurrentRecDat;
         TransactWKOST trwst;
         string mod;
@@ -23,18 +21,19 @@ namespace TransactLib
             Logger.Info("Constructor called ", mod);
             RecordsDataChangeTransaction = new List<string>();
             trwst = new TransactWKOST();
-            SourceRecDat = trwst.GetPersistentData();
             CurrentRecDat = trwst.GetPersistentData();
         }
         #endregion
 
+        #region Commit and rollback source methods
+        // Copy objects to persistent storage
         public void CopyListToPerStor()
         {
             try
             {
                 trwst.SetPersistentData(CurrentRecDat);
-                SourceRecDat = trwst.GetPersistentData();
-                CurrentRecDat = SourceRecDat;
+                CurrentRecDat = trwst.GetPersistentData();
+                Console.WriteLine(CurrentRecDat[0].getName());
                 Logger.Info("All changes commited successfully", mod);
             }
             catch (Exception ex)
@@ -42,6 +41,26 @@ namespace TransactLib
                 Logger.Error(ex, mod);
             }
         }
+
+        // Clearing objects
+        public String Clear()
+        {
+            try
+            {
+                //CurrentRecDat.Clear();
+                CurrentRecDat = trwst.GetPersistentData();
+                Console.WriteLine(CurrentRecDat[0].getName());
+                RecordsDataChangeTransaction.Clear();
+                Logger.Info("Objects cleared ( previous transaction rolled back)", mod);
+                return "Objects cleared ( previous transaction rolled back)";
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex, "Cannot clear objects");
+                return "Error when clearing objects\n";
+            }
+        }
+        #endregion
 
         #region Methods to work with List
         public int CreateRecord(string pName, string pSalary, string pCity, string pZIP, string pAge, string pPlantNum)
@@ -99,7 +118,7 @@ namespace TransactLib
         // Requesting CRUD cashe
         public String RequestCacheRecords()
         {
-            String RetStrg = "Transactional cashe";
+            String RetStrg = "---------Transactional cashe---------\n";
             int i;
             Logger.Info("Cashe requested", mod);
             Logger.Info("Current contains:", mod);
@@ -110,30 +129,13 @@ namespace TransactLib
                     RetStrg = RetStrg + RecordsDataChangeTransaction[i] + "\n";
                     Logger.Info(RecordsDataChangeTransaction[i], mod);
                 }
+                RetStrg = RetStrg + "------------------------------------\n";
                 return RetStrg;
             }
             catch (Exception ex)
             {
                 Logger.Error(ex, "Cannot request CRUD cashe");
                 return "Error when requesting CRUD cashe\n";
-            }
-        }
-
-        // Clearing objects
-        public String Clear()
-        {
-            try
-            {
-                CurrentRecDat.Clear();
-                CurrentRecDat = SourceRecDat;
-                RecordsDataChangeTransaction.Clear();
-                Logger.Info("Objects cleared ( previous transaction rolled back)", mod);
-                return "Objects cleared ( previous transaction rolled back)";
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex, "Cannot clear objects");
-                return "Error when clearing objects\n";
             }
         }
         #endregion

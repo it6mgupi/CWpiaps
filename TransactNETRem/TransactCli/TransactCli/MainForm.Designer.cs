@@ -79,7 +79,7 @@
             this.ReqCashBtn.Name = "ReqCashBtn";
             this.ReqCashBtn.Size = new System.Drawing.Size(132, 23);
             this.ReqCashBtn.TabIndex = 2;
-            this.ReqCashBtn.Text = "Request cache from CAO";
+            this.ReqCashBtn.Text = "Request  CRUD cashe";
             this.ReqCashBtn.UseVisualStyleBackColor = true;
             this.ReqCashBtn.Click += new System.EventHandler(this.ReqCashBtn_Click);
             // 
@@ -99,7 +99,7 @@
             this.SaveChBtn.Name = "SaveChBtn";
             this.SaveChBtn.Size = new System.Drawing.Size(226, 23);
             this.SaveChBtn.TabIndex = 0;
-            this.SaveChBtn.Text = "Commit from CAO to WKO Singleton";
+            this.SaveChBtn.Text = "Commit changes to Persistent storage";
             this.SaveChBtn.UseVisualStyleBackColor = true;
             this.SaveChBtn.Click += new System.EventHandler(this.SaveChBtn_Click);
             // 
@@ -120,9 +120,9 @@
             this.ObjGBox.Controls.Add(this.RemoveBtn);
             this.ObjGBox.Controls.Add(this.ModifyBtn);
             this.ObjGBox.Controls.Add(this.AddBtn);
-            this.ObjGBox.Location = new System.Drawing.Point(12, 91);
+            this.ObjGBox.Location = new System.Drawing.Point(12, 74);
             this.ObjGBox.Name = "ObjGBox";
-            this.ObjGBox.Size = new System.Drawing.Size(423, 103);
+            this.ObjGBox.Size = new System.Drawing.Size(410, 103);
             this.ObjGBox.TabIndex = 2;
             this.ObjGBox.TabStop = false;
             this.ObjGBox.Text = "Object actions ";
@@ -130,7 +130,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(251, 62);
+            this.label6.Location = new System.Drawing.Point(223, 63);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(68, 13);
             this.label6.TabIndex = 14;
@@ -139,7 +139,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(133, 62);
+            this.label5.Location = new System.Drawing.Point(114, 62);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(24, 13);
             this.label5.TabIndex = 13;
@@ -148,7 +148,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(251, 19);
+            this.label4.Location = new System.Drawing.Point(223, 19);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(26, 13);
             this.label4.TabIndex = 12;
@@ -157,7 +157,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(133, 19);
+            this.label3.Location = new System.Drawing.Point(114, 19);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(24, 13);
             this.label3.TabIndex = 11;
@@ -174,28 +174,28 @@
             // 
             // ipnInput
             // 
-            this.ipnInput.Location = new System.Drawing.Point(251, 76);
+            this.ipnInput.Location = new System.Drawing.Point(226, 77);
             this.ipnInput.Name = "ipnInput";
             this.ipnInput.Size = new System.Drawing.Size(91, 20);
             this.ipnInput.TabIndex = 9;
             // 
             // AgeInput
             // 
-            this.AgeInput.Location = new System.Drawing.Point(251, 36);
+            this.AgeInput.Location = new System.Drawing.Point(226, 36);
             this.AgeInput.Name = "AgeInput";
             this.AgeInput.Size = new System.Drawing.Size(91, 20);
             this.AgeInput.TabIndex = 8;
             // 
             // CityInput
             // 
-            this.CityInput.Location = new System.Drawing.Point(133, 76);
+            this.CityInput.Location = new System.Drawing.Point(117, 77);
             this.CityInput.Name = "CityInput";
             this.CityInput.Size = new System.Drawing.Size(100, 20);
             this.CityInput.TabIndex = 7;
             // 
             // zipInput
             // 
-            this.zipInput.Location = new System.Drawing.Point(133, 35);
+            this.zipInput.Location = new System.Drawing.Point(117, 35);
             this.zipInput.Name = "zipInput";
             this.zipInput.Size = new System.Drawing.Size(100, 20);
             this.zipInput.TabIndex = 6;
@@ -225,7 +225,7 @@
             // 
             // RemoveBtn
             // 
-            this.RemoveBtn.Location = new System.Drawing.Point(348, 74);
+            this.RemoveBtn.Location = new System.Drawing.Point(323, 75);
             this.RemoveBtn.Name = "RemoveBtn";
             this.RemoveBtn.Size = new System.Drawing.Size(75, 23);
             this.RemoveBtn.TabIndex = 2;
@@ -235,7 +235,7 @@
             // 
             // ModifyBtn
             // 
-            this.ModifyBtn.Location = new System.Drawing.Point(348, 48);
+            this.ModifyBtn.Location = new System.Drawing.Point(323, 48);
             this.ModifyBtn.Name = "ModifyBtn";
             this.ModifyBtn.Size = new System.Drawing.Size(75, 23);
             this.ModifyBtn.TabIndex = 1;
@@ -245,7 +245,7 @@
             // 
             // AddBtn
             // 
-            this.AddBtn.Location = new System.Drawing.Point(348, 19);
+            this.AddBtn.Location = new System.Drawing.Point(323, 19);
             this.AddBtn.Name = "AddBtn";
             this.AddBtn.Size = new System.Drawing.Size(75, 23);
             this.AddBtn.TabIndex = 0;
@@ -256,9 +256,9 @@
             // CurrObjGBox
             // 
             this.CurrObjGBox.Controls.Add(this.ObjectList);
-            this.CurrObjGBox.Location = new System.Drawing.Point(441, 91);
+            this.CurrObjGBox.Location = new System.Drawing.Point(428, 74);
             this.CurrObjGBox.Name = "CurrObjGBox";
-            this.CurrObjGBox.Size = new System.Drawing.Size(182, 113);
+            this.CurrObjGBox.Size = new System.Drawing.Size(195, 103);
             this.CurrObjGBox.TabIndex = 3;
             this.CurrObjGBox.TabStop = false;
             this.CurrObjGBox.Text = "Current objects";
@@ -268,7 +268,7 @@
             this.ObjectList.FormattingEnabled = true;
             this.ObjectList.Location = new System.Drawing.Point(6, 19);
             this.ObjectList.Name = "ObjectList";
-            this.ObjectList.Size = new System.Drawing.Size(170, 82);
+            this.ObjectList.Size = new System.Drawing.Size(183, 82);
             this.ObjectList.TabIndex = 0;
             this.ObjectList.SelectedIndexChanged += new System.EventHandler(this.ObjectList_SelectedIndexChanged);
             // 
@@ -276,7 +276,7 @@
             // 
             this.groupBox1.Controls.Add(this.ExportLogBtn);
             this.groupBox1.Controls.Add(this.AppConsoleTV);
-            this.groupBox1.Location = new System.Drawing.Point(12, 210);
+            this.groupBox1.Location = new System.Drawing.Point(12, 181);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(611, 122);
             this.groupBox1.TabIndex = 4;
@@ -285,7 +285,7 @@
             // 
             // ExportLogBtn
             // 
-            this.ExportLogBtn.Location = new System.Drawing.Point(34, 0);
+            this.ExportLogBtn.Location = new System.Drawing.Point(32, 0);
             this.ExportLogBtn.Name = "ExportLogBtn";
             this.ExportLogBtn.Size = new System.Drawing.Size(75, 23);
             this.ExportLogBtn.TabIndex = 3;
@@ -305,7 +305,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(635, 344);
+            this.ClientSize = new System.Drawing.Size(635, 310);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.CurrObjGBox);
             this.Controls.Add(this.ObjGBox);

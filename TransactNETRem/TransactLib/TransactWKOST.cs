@@ -7,7 +7,7 @@ namespace TransactLib
     public class TransactWKOST : MarshalByRefObject
     {
         string mod;
-        List<RecordDataObject> RecordsData;
+        public List<RecordDataObject> RecordsData;
 
         public TransactWKOST()
         {
