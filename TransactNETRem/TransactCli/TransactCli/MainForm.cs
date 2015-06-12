@@ -249,5 +249,11 @@ namespace TransactCli
                 MessageBox.Show("Please select an Item first!");
             }
         }
+
+        private void RefreshBtn_Click(object sender, EventArgs e)
+        {
+            Transact.Refresh();
+            UpdateObjectsList();
+        }
     }
 }

@@ -13,6 +13,12 @@ namespace TransactLib
         string mod;
         #endregion
 
+        public void Refresh() 
+        {
+            trwst = (TransactWKOST)Activator.GetObject(typeof(TransactWKOST), "http://localhost:13000/StURI.rem");
+            CurrentRecDat = trwst.GetPersistentData();
+        }
+
         #region Constructor, initializing objects
         public TransactCAO()
         {
@@ -23,10 +29,11 @@ namespace TransactLib
             try
             {
                 //TransactWKOST trwst = new TransactWKOST(); 
-                trwst = (TransactWKOST)Activator.GetObject(typeof(TransactWKOST), "http://localhost:13000/StURI.rem");
-                CurrentRecDat = trwst.GetPersistentData();
+                Refresh();
             }
-            catch { //TransactWKOST trwst = new TransactWKOST(); //CurrentRecDat = trwst.GetPersistentData();
+            catch(Exception ex) 
+            { 
+                //TransactWKOST trwst = new TransactWKOST(); //CurrentRecDat = trwst.GetPersistentData();
             }
         }
         #endregion
@@ -39,7 +46,6 @@ namespace TransactLib
             {
                 trwst.SetPersistentData(CurrentRecDat);
                 CurrentRecDat = trwst.GetPersistentData();
-                Console.WriteLine(CurrentRecDat[0].getName());
                 Logger.Info("All changes commited successfully", mod);
             }
             catch (Exception ex)
@@ -54,8 +60,7 @@ namespace TransactLib
             try
             {
                 //CurrentRecDat.Clear();
-                CurrentRecDat = trwst.GetPersistentData();
-                Console.WriteLine(CurrentRecDat[0].getName());
+                Refresh();
                 RecordsDataChangeTransaction.Clear();
                 Logger.Info("Objects cleared ( previous transaction rolled back)", mod);
                 return "Objects cleared ( previous transaction rolled back)";

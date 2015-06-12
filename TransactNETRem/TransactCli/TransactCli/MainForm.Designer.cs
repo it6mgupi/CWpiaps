@@ -55,6 +55,7 @@
             this.ExportLogBtn = new System.Windows.Forms.Button();
             this.AppConsoleTV = new System.Windows.Forms.RichTextBox();
             this.SaveLogDia = new System.Windows.Forms.SaveFileDialog();
+            this.RefreshBtn = new System.Windows.Forms.Button();
             this.MenuGBox.SuspendLayout();
             this.ObjGBox.SuspendLayout();
             this.CurrObjGBox.SuspendLayout();
@@ -63,6 +64,7 @@
             // 
             // MenuGBox
             // 
+            this.MenuGBox.Controls.Add(this.RefreshBtn);
             this.MenuGBox.Controls.Add(this.ReqCashBtn);
             this.MenuGBox.Controls.Add(this.CancelChBtn);
             this.MenuGBox.Controls.Add(this.SaveChBtn);
@@ -75,7 +77,7 @@
             // 
             // ReqCashBtn
             // 
-            this.ReqCashBtn.Location = new System.Drawing.Point(473, 19);
+            this.ReqCashBtn.Location = new System.Drawing.Point(348, 20);
             this.ReqCashBtn.Name = "ReqCashBtn";
             this.ReqCashBtn.Size = new System.Drawing.Size(132, 23);
             this.ReqCashBtn.TabIndex = 2;
@@ -301,6 +303,16 @@
             this.AppConsoleTV.TabIndex = 2;
             this.AppConsoleTV.Text = "";
             // 
+            // RefreshBtn
+            // 
+            this.RefreshBtn.Location = new System.Drawing.Point(530, 20);
+            this.RefreshBtn.Name = "RefreshBtn";
+            this.RefreshBtn.Size = new System.Drawing.Size(75, 23);
+            this.RefreshBtn.TabIndex = 3;
+            this.RefreshBtn.Text = "Refresh";
+            this.RefreshBtn.UseVisualStyleBackColor = true;
+            this.RefreshBtn.Click += new System.EventHandler(this.RefreshBtn_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -350,6 +362,7 @@
         private System.Windows.Forms.TextBox SalaryInput;
         private System.Windows.Forms.TextBox NameInput;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button RefreshBtn;
     }
 }
 
