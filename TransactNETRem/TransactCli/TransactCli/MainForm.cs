@@ -118,17 +118,26 @@ namespace TransactCli
         // Saving current changes
         private void SaveChBtn_Click(object sender, EventArgs e)
         {
+            int result = 0;
 			try
 			{
                 TransactWKOSC m_Accessor = new TransactWKOSC();
-                m_Accessor.Commit(Transact);
-				AppConsoleTV.Text = AppConsoleTV.Text + "Changes committed to persistent storage\n";
-                UpdateObjectsList();
+                result = m_Accessor.Commit(Transact);	
 			}
             catch (RemotingException ex)
 			{
 				throw new RemotingException("Could not make commit\n", ex);
 			}
+            if (result == 1)
+            {
+                AppConsoleTV.Text = AppConsoleTV.Text + "Changes committed to persistent storage\n";
+                UpdateObjectsList();
+            }
+            else
+            {
+                AppConsoleTV.Text = AppConsoleTV.Text + "Error when commiting. Rolled back \n";
+                UpdateObjectsList();
+            }
         }
 
         // Rolling changes back

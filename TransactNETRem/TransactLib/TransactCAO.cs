@@ -40,55 +40,57 @@ namespace TransactLib
 
         #region Commit and rollback source methods
         // Copy objects to persistent storage
-        public void CopyListToPerStor()
+        public int CopyListToPerStor()
         {
             try
             {
-                
-                List<RecordDataObject> persistent = trwst.GetPersistentData();
-                Console.WriteLine("Checking persistent storage ( " + persistent.Count.ToString()  + " rows) vs CAO (" +
-                     CurrentRecDat.Count.ToString() + " rows)");
+                    List<RecordDataObject> persistent = trwst.GetPersistentData();
+                    Console.WriteLine("Checking persistent storage ( " + persistent.Count.ToString() + " rows) vs CAO (" +
+                         CurrentRecDat.Count.ToString() + " rows)");
 
-                for(int i = 0; i < persistent.Count; ++i)
-                {
-                    if (!persistent[i].isEqual(CurrentRecDat[i]))
+                    for (int i = 0; i < persistent.Count; ++i)
                     {
-                        Console.WriteLine("["+ i.ToString() + "] Object in CAO ("+
-                            CurrentRecDat[i].toString() +") != (" + persistent[i].toString() +") object in persistent storage - ROLLBACK");
+                        if (!persistent[i].isEqual(CurrentRecDat[i]))
+                        {
+                            Console.WriteLine("[" + i.ToString() + "] Object in CAO (" +
+                                CurrentRecDat[i].toString() + ") != (" + persistent[i].toString() + ") object in persistent storage - ROLLBACK");
 
-                        Logger.Info("Objects in CAO != objects in persistent storage", mod);
-                        throw new Exception("Could not make commit(1)\n"); 
+                            Logger.Info("Objects in CAO != objects in persistent storage", mod);
+                            Refresh();
+                            return 0;
+                        }
                     }
-                }
-                Console.WriteLine("OK");
+                    Console.WriteLine("OK");
 
-                trwst.SetPersistentData(CurrentRecDat);
-                persistent = trwst.GetPersistentData();
+                    trwst.SetPersistentData(CurrentRecDat);
+                    persistent = trwst.GetPersistentData();
 
-                Console.WriteLine("Checking updated persistent storage ( " + persistent.Count.ToString() + " rows) vs CAO (" +
-                     CurrentRecDat.Count.ToString() + " rows)");
+                    Console.WriteLine("Checking updated persistent storage ( " + persistent.Count.ToString() + " rows) vs CAO (" +
+                         CurrentRecDat.Count.ToString() + " rows)");
 
-                for (int i = 0; i < CurrentRecDat.Count; ++i)
-                {
-                    if (!persistent[i].isEqual(CurrentRecDat[i]))
+                    for (int i = 0; i < CurrentRecDat.Count; ++i)
                     {
-                        Console.WriteLine("["+ i.ToString() + "] Object in CAO ("+
-                            CurrentRecDat[i].toString() + ") != (" + persistent[i].toString() + ") object in persistent storage - ROLLBACK");
+                        if (!persistent[i].isEqual(CurrentRecDat[i]))
+                        {
+                            Console.WriteLine("[" + i.ToString() + "] Object in CAO (" +
+                                CurrentRecDat[i].toString() + ") != (" + persistent[i].toString() + ") object in persistent storage - ROLLBACK");
 
-                        Logger.Info("Error committing data to persistent storage", mod);
-                        throw new Exception("Could not make commit(2)\n");
+                            Logger.Info("Error committing data to persistent storage", mod);
+                            Refresh();
+                            return 0;
+                        }
                     }
-                }
-                Console.WriteLine("OK");
-                
-                //trwst.SetPersistentData(CurrentRecDat);
-                //CurrentRecDat = trwst.GetPersistentData();
-                Logger.Info("All changes commited successfully", mod);
+                    Console.WriteLine("OK");
+
+                    //trwst.SetPersistentData(CurrentRecDat);
+                    //CurrentRecDat = trwst.GetPersistentData();
+                    Logger.Info("All changes commited successfully", mod);
             }
             catch (Exception ex)
             {
                 Logger.Error(ex, mod);
             }
+            return 1;
         }
 
         // Clearing objects
@@ -99,8 +101,8 @@ namespace TransactLib
                 //CurrentRecDat.Clear();
                 Refresh();
                 RecordsDataChangeTransaction.Clear();
-                Logger.Info("Objects cleared ( previous transaction rolled back)", mod);
-                return "Objects cleared ( previous transaction rolled back)";
+                Logger.Info("Objects cleared (rolled back to previous state)", mod);
+                return "Objects cleared (rolled back to previous state)";
             }
             catch (Exception ex)
             {

@@ -15,14 +15,16 @@ namespace TransactLib
         }
 
         #region Functional module
-        public void Commit(TransactCAO CAO){
+        public int Commit(TransactCAO CAO){
+            int result = 0;
 			try 
             {
-                CAO.CopyListToPerStor();
+                result = CAO.CopyListToPerStor();
 			}
 			catch(Exception ex){
                 Logger.Error(ex, mod);
 			}
+            return result;
 		}
 
 		public void Rollback(TransactCAO CAO){
