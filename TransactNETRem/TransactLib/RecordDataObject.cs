@@ -26,6 +26,21 @@ namespace TransactLib
 		}
         #endregion
 
+        public string toString()
+        {
+            return Name + " " + Salary + " " + City + " " + ZIP + " " + Age + " " + IndPlantNumber;
+        }
+
+        public bool isEqual(RecordDataObject obj)
+        {
+            return ((obj.Name == Name) && 
+                (obj.Salary == Salary) &&
+                (obj.City == City) &&
+                (obj.ZIP == ZIP) &&
+                (obj.Age == Age) &&
+                (obj.IndPlantNumber == IndPlantNumber));
+        }
+
         #region A bunch of getter functions
         public string getName() { return Name; }
         public string getSalary() { return Salary; }

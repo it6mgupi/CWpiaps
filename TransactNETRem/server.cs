@@ -6,6 +6,7 @@ using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Ipc;
 using System.Runtime.InteropServices;
 using TransactLib;
+using System.Runtime.Remoting.Channels.Http;
 
 
 namespace TransactServer
@@ -24,13 +25,13 @@ namespace TransactServer
                 }
                 catch (Exception e)
                 {
-                    Logger.Error( e, "Cannot read or parse remoting configuration file");
+                    Logger.Error(e, "Cannot read or parse remoting configuration file");
                 }
-            else 
-            { 
-                Logger.Error("Cannot find Remoting configuration file ", mod); 
+            else
+            {
+                Logger.Error("Cannot find Remoting configuration file ", mod);
             }
-            
+
             //Init our server channel.
             IpcServerChannel channel = new IpcServerChannel("ServerChannel");
 
@@ -41,7 +42,7 @@ namespace TransactServer
             RemotingConfiguration.RegisterWellKnownServiceType(
                                         typeof(TransactLib.TransactWKOSC),
                                         "ScURI.rem",
-                                        WellKnownObjectMode.SingleCall);//.Singleton);
+                                        WellKnownObjectMode.SingleCall);
 
             Logger.Info("-----------Server logger started-----------", mod);
 
