@@ -19,7 +19,6 @@ namespace TransactLib
             trwst = (TransactWKOST)Activator.GetObject(typeof(TransactWKOST), "http://localhost:13000/StURI.rem");
             CurrentRecDat = trwst.GetPersistentData();
             CurrentCache = trwst.GetPersistentData();
-            Console.WriteLine(CurrentCache[0].getName());
         }
 
         #region Constructor, initializing objects
@@ -50,15 +49,28 @@ namespace TransactLib
                     List<RecordDataObject> persistent = trwst.GetPersistentData();
                     Console.WriteLine("Checking persistent storage ( " + persistent.Count.ToString() + " rows) vs CAO (" +
                     CurrentCache.Count.ToString() + " rows)");
+
+                    string errMes = "Cache was updated in another client - ROLLBACK\n";
+                        
+                    if (CurrentCache.Count != persistent.Count)
+                    {
+                        Console.WriteLine(errMes);
+                        Logger.Info(errMes, mod);
+
+                        Refresh();
+                        return 0;
+                    }
+
                     for (int i = 0; i < persistent.Count; ++i)
                     {
                         if (!persistent[i].isEqual(CurrentCache[i]))
                         {
-                            Console.WriteLine("[" + i.ToString() + "] Object in CAO (" +
-                                CurrentCache[i].toString() + ") != (" + persistent[i].toString() + ") object in persistent storage - ROLLBACK");                                Logger.Info("Objects in CAO != objects in persistent storage", mod);
+                            Console.WriteLine(errMes);
+                            Logger.Info(errMes, mod);
+
                             Refresh();
                             return 0;
-                        }
+                        }
                     }
 
                     trwst.SetPersistentData(CurrentRecDat);
