@@ -9,6 +9,7 @@ namespace TransactLib
         #region Initializing global components
         List<string> RecordsDataChangeTransaction;
         public List<RecordDataObject> CurrentRecDat;
+        public List<RecordDataObject> CurrentCache;
         TransactWKOST trwst;
         string mod;
         #endregion
@@ -17,6 +18,8 @@ namespace TransactLib
         {
             trwst = (TransactWKOST)Activator.GetObject(typeof(TransactWKOST), "http://localhost:13000/StURI.rem");
             CurrentRecDat = trwst.GetPersistentData();
+            CurrentCache = trwst.GetPersistentData();
+            Console.WriteLine(CurrentCache[0].getName());
         }
 
         #region Constructor, initializing objects
@@ -46,21 +49,17 @@ namespace TransactLib
             {
                     List<RecordDataObject> persistent = trwst.GetPersistentData();
                     Console.WriteLine("Checking persistent storage ( " + persistent.Count.ToString() + " rows) vs CAO (" +
-                         CurrentRecDat.Count.ToString() + " rows)");
-
+                    CurrentCache.Count.ToString() + " rows)");
                     for (int i = 0; i < persistent.Count; ++i)
                     {
-                        if (!persistent[i].isEqual(CurrentRecDat[i]))
+                        if (!persistent[i].isEqual(CurrentCache[i]))
                         {
                             Console.WriteLine("[" + i.ToString() + "] Object in CAO (" +
-                                CurrentRecDat[i].toString() + ") != (" + persistent[i].toString() + ") object in persistent storage - ROLLBACK");
-
-                            Logger.Info("Objects in CAO != objects in persistent storage", mod);
+                                CurrentCache[i].toString() + ") != (" + persistent[i].toString() + ") object in persistent storage - ROLLBACK");                                Logger.Info("Objects in CAO != objects in persistent storage", mod);
                             Refresh();
                             return 0;
-                        }
+                        }
                     }
-                    Console.WriteLine("OK");
 
                     trwst.SetPersistentData(CurrentRecDat);
                     persistent = trwst.GetPersistentData();
@@ -90,6 +89,7 @@ namespace TransactLib
             {
                 Logger.Error(ex, mod);
             }
+            Refresh();
             return 1;
         }
 
@@ -115,6 +115,7 @@ namespace TransactLib
         #region Methods to work with List
         public int CreateRecord(string pName, string pSalary, string pCity, string pZIP, string pAge, string pPlantNum)
         {
+            int result = 0;
             try
             {
                 int EntriesCount;
@@ -123,46 +124,51 @@ namespace TransactLib
                 CurrentRecDat.Add(new RecordDataObject());
                 CurrentRecDat[EntriesCount].SetRec(pName, pSalary, pCity, pZIP, pAge, pPlantNum);
                 RecordsDataChangeTransaction.Add("Record " + pName + pSalary + pCity + pZIP + pAge + pPlantNum + " created");
-                return 1;
+                result = 1;
             }
             catch (Exception ex)
             {
                 Logger.Error(ex, mod);
-                return 0;
+                result = 0;
             }
+            return result;
         }
 
         public int UpdateRecord(int pos, string pName, string pSalary, string pCity, string pZIP, string pAge, string pPlantNum)
         {
+            int result = 0;
             try
             {
                 CurrentRecDat[pos].SetRec(pName, pSalary, pCity, pZIP, pAge, pPlantNum);
                 RecordsDataChangeTransaction.Add("Record at position " + pos + " updated with " + pName + pSalary + pCity + pZIP + pAge + pPlantNum);
                 Console.WriteLine("Record at position updated with " + pName + pSalary + pCity + pZIP + pAge + pPlantNum);
                 Logger.Info("Record updated", mod);
-                return 1;
+                result = 1;
             }
             catch (Exception ex)
             {
                 Logger.Error(ex, mod);
-                return 0;
+                result = 0;
             }
+            return result;
         }
 
         public int DeleteRecord(int pos)
         {
+            int result = 0;
             try
             {
                 CurrentRecDat.RemoveAt(pos);
                 RecordsDataChangeTransaction.Add("Deleted record at position " + pos.ToString());
                 Logger.Info("Deleted record at position " + pos.ToString(), mod);
-                return 1;
+                result = 1;
             }
             catch (Exception ex)
             {
                 Logger.Error(ex, mod);
-                return 0;
+                result = 0;
             }
+            return result;
         }
 
         // Requesting CRUD cashe
