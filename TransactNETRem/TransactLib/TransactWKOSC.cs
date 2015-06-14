@@ -8,6 +8,7 @@ namespace TransactLib
    public class TransactWKOSC : MarshalByRefObject
    {
         string mod;
+        TransactWKOST trwst;
         public TransactWKOSC()
 	    {
             mod = "WKOSingleCall";
@@ -15,6 +16,7 @@ namespace TransactLib
         }
 
         #region Functional module
+
         public int Commit(TransactCAO CAO){
             int result = 0;
 			try 

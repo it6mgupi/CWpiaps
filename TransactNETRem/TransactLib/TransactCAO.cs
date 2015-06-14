@@ -1,11 +1,13 @@
 
 using System;
+using System.Runtime.Remoting.Lifetime;
 using System.Collections.Generic;
 
 namespace TransactLib
 {
-    public class TransactCAO : MarshalByRefObject
+    public class TransactCAO : MarshalByRefObject, IDisposable
     {
+
         #region Initializing global components
         List<string> RecordsDataChangeTransaction;
         public List<RecordDataObject> CurrentRecDat;
@@ -14,9 +16,20 @@ namespace TransactLib
         string mod;
         #endregion
 
+        public override object InitializeLifetimeService()
+        {
+            // Call base class version
+            ILease leaseInfo = (ILease)base.InitializeLifetimeService();
+
+            // Register a CustomerSponsor object as a sponsor.
+            leaseInfo.Register(new Sponsor());
+
+            return leaseInfo;
+        }
+
         public void Refresh() 
         {
-            trwst = (TransactWKOST)Activator.GetObject(typeof(TransactWKOST), "http://localhost:13000/StURI.rem");
+            trwst = (TransactWKOST)Activator.GetObject(typeof(TransactWKOST), "tcp://localhost:13000/StURI.rem");
             CurrentRecDat = trwst.GetPersistentData();
             CurrentCache = trwst.GetPersistentData();
         }
@@ -207,5 +220,11 @@ namespace TransactLib
             }
         }
         #endregion
+
+        public void Dispose()
+        {
+            // Dispose(true);
+            GC.SuppressFinalize(this);
+        }
     }
 }

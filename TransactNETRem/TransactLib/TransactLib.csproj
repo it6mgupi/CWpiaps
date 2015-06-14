@@ -78,6 +78,7 @@
     </Compile>
     <Compile Include="Logger.cs" />
     <Compile Include="RecordDataObject.cs" />
+    <Compile Include="Sponsor.cs" />
     <Compile Include="TransactCAO.cs" />
     <Compile Include="TransactWKOSC.cs" />
     <Compile Include="TransactWKOST.cs" />

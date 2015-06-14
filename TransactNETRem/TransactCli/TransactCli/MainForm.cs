@@ -4,17 +4,19 @@ using System.IO;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Runtime.Remoting;
+using System.Runtime.Remoting.Lifetime;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Ipc;
-using TransactLib;
 using System.Collections;
 using System.Runtime.Serialization.Formatters;
+using TransactLib;
 
 namespace TransactCli
 {
     public partial class MainForm : Form
     {
         TransactCAO Transact;
+        TransactWKOST SingleTon1;
         string PName;
         string Salary;
         string Age;
@@ -31,38 +33,52 @@ namespace TransactCli
 			string conffile = "TransactCli.exe.config";
 			RemotingConfiguration.Configure (conffile, false);
 
-            // Registering client IPC Channel
-            WellKnownClientTypeEntry typeentry =
-                        new WellKnownClientTypeEntry(typeof(TransactWKOSC),
-                        "ipc://ServerChannel/ScURI.rem");
-
-            typeentry.ApplicationUrl = "ipc://ServerChannel/ScURI.rem";
-
-            BinaryClientFormatterSinkProvider sinkprovider = new
-                                BinaryClientFormatterSinkProvider();
-            
-            IDictionary properties = new Hashtable();
-            properties["name"] = "TcpBinary";
-            properties["port"] = 0;
-
-            BinaryServerFormatterSinkProvider provider = new
-                                BinaryServerFormatterSinkProvider();
-
-            provider.TypeFilterLevel = TypeFilterLevel.Full;
-
-            //Create an IPC client channel.
-            channel = new IpcClientChannel(properties, sinkprovider);
-            ChannelServices.RegisterChannel(channel, true);
-
             try
             { 
                 Transact = new TransactCAO();
+
+                ISponsor m_CAOSponsor = new XSponsor();
+                ISponsor m_STSponsor = new CliSTSponsor();
+
+                // Register the client side sponsor
+                ILease lease = (ILease)Transact.InitializeLifetimeService();
+                lease.Register(m_CAOSponsor);
+
+                SingleTon1 = (TransactWKOST)Activator.GetObject(typeof(TransactWKOST), "tcp://localhost:13000/StURI.rem");
+                //ILease leaseInfo1 = (ILease)SingleTon1.InitializeLifetimeService();
+                ILease leaseInfo1 = (ILease)SingleTon1.GetLifetimeService();
+                leaseInfo1.Register(m_STSponsor);
+
+                //SingleTon1.LeaseCashe.Add(m_CAOSponsor);
+                //SingleTon1.LeaseCashe.Add(m_STSponsor);
+
+                // Registering client IPC Channel
+                WellKnownClientTypeEntry typeentry =
+                            new WellKnownClientTypeEntry(typeof(TransactWKOSC),
+                            "ipc://ServerChannel/ScURI.rem");
+
+                typeentry.ApplicationUrl = "ipc://ServerChannel/ScURI.rem";
+
+                BinaryClientFormatterSinkProvider sinkprovider = new
+                                    BinaryClientFormatterSinkProvider();
+
+                IDictionary properties = new Hashtable();
+                properties["name"] = "TcpBinary";
+                properties["port"] = 0;
+
+                BinaryServerFormatterSinkProvider provider = new
+                                    BinaryServerFormatterSinkProvider();
+
+                provider.TypeFilterLevel = TypeFilterLevel.Full;
+
+                //Create an IPC client channel.
+                channel = new IpcClientChannel(properties, sinkprovider);
+                ChannelServices.RegisterChannel(channel, true);
 
                 AppConsoleTV.Text = AppConsoleTV.Text + "----Client application logging started----\n";
 
                 // Adding new entries to log
 			    AppConsoleTV.Text = AppConsoleTV.Text + "CAO called\n";
-			    AppConsoleTV.Text = AppConsoleTV.Text + "Adding record\n";
 
                 UpdateObjectsList();
             }
