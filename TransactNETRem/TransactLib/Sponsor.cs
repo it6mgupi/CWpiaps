@@ -8,12 +8,14 @@ namespace TransactLib
 {
     public class Sponsor : MarshalByRefObject, ISponsor
     {
-          private int mRenewCount = 0;  
+          private static int mRenewCount = 0;  
            // Implements ISponsor.Renewal
            public TimeSpan Renewal(ILease leaseInfo)
             {
                 int CurrSec = leaseInfo.CurrentLeaseTime.Seconds;
-            Console.WriteLine("CustomerSponsor.Renewal()");
+                Console.WriteLine("Sponsor.Renewal() mRenewCount: " + 
+                    mRenewCount + " currSec: " + CurrSec.ToString());
+            
                if (mRenewCount < 3)
                 {
                     mRenewCount++;
@@ -21,7 +23,7 @@ namespace TransactLib
                 }
                 else
                 {
-                    return TimeSpan.FromSeconds(0);
+                    return TimeSpan.Zero;
                 }
             }
     }

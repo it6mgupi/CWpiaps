@@ -15,8 +15,8 @@ namespace TransactCli
 {
     public partial class MainForm : Form
     {
-        TransactCAO Transact;
-        TransactWKOST SingleTon1;
+        TransactCAO transactCAO;
+        TransactWKOST transactWKOST;
         ISponsor m_CAOSponsor;
         ISponsor m_STSponsor;
 
@@ -37,33 +37,23 @@ namespace TransactCli
 
             try
             { 
-                
                 m_CAOSponsor = new XSponsor();
                 m_STSponsor = new CliSTSponsor();
 
-                using (Transact = new TransactCAO())
+                using (transactCAO = new TransactCAO())
                 {
 
-                    ILease lease = (ILease)RemotingServices.GetLifetimeService(Transact);
+                    ILease lease = (ILease)RemotingServices.GetLifetimeService(transactCAO);
                     lease.Register(m_CAOSponsor);
 
-
-                    // Register the client side sponsor
-                    //ILease lease = (ILease)Transact.InitializeLifetimeService();
-                    //lease.Register(m_CAOSponsor);
-
-                    SingleTon1 = (TransactWKOST)Activator.GetObject(typeof(TransactWKOST), "tcp://localhost:13000/StURI.rem");
-                    if (SingleTon1 == null)
-                    {
-                        MessageBox.Show("SingleTon1 == null");
-                    }
-                    ILease leaseInfo1 = (ILease)SingleTon1.InitializeLifetimeService();
-                    //ILease leaseInfo1 = (ILease)SingleTon1.GetLifetimeService();
+                    transactWKOST = (TransactWKOST)Activator.GetObject(typeof(TransactWKOST), "tcp://localhost:13000/StURI.rem");
+                    
+                    ILease leaseInfo1 = (ILease)transactWKOST.GetLifetimeService();
                     leaseInfo1.Register(m_STSponsor);
 
-                    SingleTon1.SponsorsList.Add(m_CAOSponsor);
-                    SingleTon1.SponsorsList.Add(m_STSponsor);
-
+                    transactWKOST.SponsorsList.Add(m_CAOSponsor);
+                    transactWKOST.SponsorsList.Add(m_STSponsor);
+                    transactWKOST.renewSponsors();
 
                     AppConsoleTV.Text = AppConsoleTV.Text + "----Client application logging started----\n";
 
@@ -84,7 +74,7 @@ namespace TransactCli
         void OnClosed(object sender, EventArgs e)
         {
             //Unegister the sponsor
-            ILease lease = (ILease)RemotingServices.GetLifetimeService(Transact);
+            ILease lease = (ILease)RemotingServices.GetLifetimeService(transactCAO);
             lease.Unregister(m_CAOSponsor);
         }
 
@@ -117,7 +107,7 @@ namespace TransactCli
             ObjectList.Items.Clear();
             try
             {
-                foreach (RecordDataObject element in Transact.CurrentRecDat)
+                foreach (RecordDataObject element in transactCAO.CurrentRecDat)
                 {
                     ObjectList.Items.Add(element.getName());
                 }
@@ -136,7 +126,7 @@ namespace TransactCli
 			try
 			{
                 TransactWKOSC m_Accessor = new TransactWKOSC();
-                result = m_Accessor.Commit(Transact);	
+                result = m_Accessor.Commit(transactCAO);	
 			}
             catch (RemotingException ex)
 			{
@@ -160,7 +150,7 @@ namespace TransactCli
 			try
 		    {
                 TransactWKOSC m_Accessor = new TransactWKOSC();
-                m_Accessor.Rollback(Transact);
+                m_Accessor.Rollback(transactCAO);
 
 			    AppConsoleTV.Text = AppConsoleTV.Text + "Changes rolled back\n";
                 UpdateObjectsList();
@@ -177,7 +167,7 @@ namespace TransactCli
             string Answer;
 
             AppConsoleTV.Text = AppConsoleTV.Text + "Getting current cache\n";
-            Answer = Transact.RequestCacheRecords();
+            Answer = transactCAO.RequestCacheRecords();
             AppConsoleTV.Text = AppConsoleTV.Text + Answer;
         }
 
@@ -187,7 +177,7 @@ namespace TransactCli
             getInput();
             int result;
             AppConsoleTV.Text = AppConsoleTV.Text + "Creating new record...\n";
-            result = Transact.CreateRecord(PName, Salary, ZIP, City, Age, IndPlantNum);
+            result = transactCAO.CreateRecord(PName, Salary, ZIP, City, Age, IndPlantNum);
             if (result == 1)
             {
                 AppConsoleTV.Text = AppConsoleTV.Text + "New record created\n";
@@ -203,7 +193,7 @@ namespace TransactCli
                 getInput();
                 int result;
                 AppConsoleTV.Text = AppConsoleTV.Text + "Modifying record...\n";
-                result = Transact.UpdateRecord(ObjectList.SelectedIndex, PName, Salary, ZIP, City, Age, IndPlantNum);
+                result = transactCAO.UpdateRecord(ObjectList.SelectedIndex, PName, Salary, ZIP, City, Age, IndPlantNum);
                 if (result == 1)
                 {
                     AppConsoleTV.Text = AppConsoleTV.Text + "Record successfully modified\n";
@@ -223,7 +213,7 @@ namespace TransactCli
             {
                 int result;
                 AppConsoleTV.Text = AppConsoleTV.Text + "Deleting record...\n";
-                result = Transact.DeleteRecord(ObjectList.SelectedIndex);
+                result = transactCAO.DeleteRecord(ObjectList.SelectedIndex);
                 if (result == 1)
                 {
                     AppConsoleTV.Text = AppConsoleTV.Text + "Record successfully deleted\n";
@@ -260,12 +250,12 @@ namespace TransactCli
         {
             if (ObjectList.SelectedIndex != -1)
             {
-                NameInput.Text = Transact.CurrentRecDat[ObjectList.SelectedIndex].getName();
-                SalaryInput.Text = Transact.CurrentRecDat[ObjectList.SelectedIndex].getSalary();
-                AgeInput.Text = Transact.CurrentRecDat[ObjectList.SelectedIndex].getAge();
-                zipInput.Text = Transact.CurrentRecDat[ObjectList.SelectedIndex].getZIP();
-                CityInput.Text = Transact.CurrentRecDat[ObjectList.SelectedIndex].getCity();
-                ipnInput.Text = Transact.CurrentRecDat[ObjectList.SelectedIndex].getPlantNum();
+                NameInput.Text = transactCAO.CurrentRecDat[ObjectList.SelectedIndex].getName();
+                SalaryInput.Text = transactCAO.CurrentRecDat[ObjectList.SelectedIndex].getSalary();
+                AgeInput.Text = transactCAO.CurrentRecDat[ObjectList.SelectedIndex].getAge();
+                zipInput.Text = transactCAO.CurrentRecDat[ObjectList.SelectedIndex].getZIP();
+                CityInput.Text = transactCAO.CurrentRecDat[ObjectList.SelectedIndex].getCity();
+                ipnInput.Text = transactCAO.CurrentRecDat[ObjectList.SelectedIndex].getPlantNum();
             }
             else
             {
@@ -275,8 +265,17 @@ namespace TransactCli
 
         private void RefreshBtn_Click(object sender, EventArgs e)
         {
-            Transact.Refresh();
-            UpdateObjectsList();
+            try
+            {
+                transactCAO.Refresh();
+                UpdateObjectsList();
+            }
+            // If a server is down for some reason          
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error: cannot connect to server: ");
+                this.Close();
+            }
         }
     }
 }

@@ -8,14 +8,14 @@ namespace TransactLib
 {
     public class XSponsor : MarshalByRefObject, ISponsor
     {
-
-        private int mRenewCount = 0;
+        private static int mRenewCount = 0;
         // Implements ISponsor.Renewal
         public TimeSpan Renewal(ILease leaseInfo)
         {
-            //leaseInfo.CurrentLeaseTime.Minutes;
             int gtx = leaseInfo.CurrentLeaseTime.Seconds;
-            Console.WriteLine("XSponsor.Renewal()");
+            TransactWKOST transactWKOST = (TransactWKOST)Activator.GetObject(typeof(TransactWKOST), "tcp://localhost:13000/StURI.rem");
+            transactWKOST.ConsoleWriteLine("CAO XSponsor.Renewal() mRenewCount: " +
+                    mRenewCount + " gtx=" + gtx.ToString());
             if (mRenewCount < 3)
             {
                 mRenewCount++;
@@ -23,7 +23,7 @@ namespace TransactLib
             }
             else
             {
-                return TimeSpan.FromSeconds(0);
+                return TimeSpan.Zero;
             }
         }
     }

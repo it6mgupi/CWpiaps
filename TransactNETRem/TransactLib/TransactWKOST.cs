@@ -17,16 +17,35 @@ namespace TransactLib
             ISponsor s = new Sponsor();
             // Call base class version
             ILease leaseInfo = (ILease)base.InitializeLifetimeService();
-            Console.WriteLine("singletone lifetime: " + leaseInfo.SponsorshipTimeout);
+            
             // Регистрируем спонсора
             leaseInfo.Register(s);
 
-            while(SponsorsList.Count > 0){
+            return leaseInfo;
+        }
+
+        public void ConsoleWriteLine(string text)
+        {
+            Console.WriteLine(text);
+        }
+
+        public static int count = 0;
+
+        public void renewSponsors() {
+
+            if(count == 0) {
+                
+                count = 1;
+
+                ILease leaseInfo = (ILease)GetLifetimeService();
+
+            while(SponsorsList.Count > 0) {
+                
             for (int i = 0; i < SponsorsList.Count; i++)
             {
                 try
                 {
-                    SponsorsList[i].Renewal(leaseInfo);
+                    SponsorsList[i].Renewal(leaseInfo);        
                 }
                 catch (Exception ex)
                 {
@@ -35,8 +54,9 @@ namespace TransactLib
                 }
             }
             }
-
-            return leaseInfo;
+            }
+            
+            count = 0;
         }
 
         public TransactWKOST()
@@ -53,8 +73,7 @@ namespace TransactLib
 
         public void Dispose()
         {
-            // Dispose(true);
-            Console.WriteLine("CAO Dispose called");
+            Console.WriteLine("WKO Singleton Dispose called");
             GC.SuppressFinalize(this);
         }
 

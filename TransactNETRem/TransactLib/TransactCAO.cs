@@ -93,25 +93,8 @@ namespace TransactLib
                     trwst.SetPersistentData(CurrentRecDat);
                     persistent = trwst.GetPersistentData();
 
-                    Console.WriteLine("Checking updated persistent storage ( " + persistent.Count.ToString() + " rows) vs CAO (" +
-                         CurrentRecDat.Count.ToString() + " rows)");
-
-                    for (int i = 0; i < CurrentRecDat.Count; ++i)
-                    {
-                        if (!persistent[i].isEqual(CurrentRecDat[i]))
-                        {
-                            Console.WriteLine("[" + i.ToString() + "] Object in CAO (" +
-                                CurrentRecDat[i].toString() + ") != (" + persistent[i].toString() + ") object in persistent storage - ROLLBACK");
-
-                            Logger.Info("Error committing data to persistent storage", mod);
-                            Refresh();
-                            return 0;
-                        }
-                    }
                     Console.WriteLine("OK");
 
-                    //trwst.SetPersistentData(CurrentRecDat);
-                    //CurrentRecDat = trwst.GetPersistentData();
                     Logger.Info("All changes commited successfully", mod);
             }
             catch (Exception ex)
