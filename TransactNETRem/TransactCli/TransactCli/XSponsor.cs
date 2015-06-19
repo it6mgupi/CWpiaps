@@ -8,6 +8,7 @@ namespace TransactLib
 {
     public class XSponsor : MarshalByRefObject, ISponsor
     {
+
         private int mRenewCount = 0;
         // Implements ISponsor.Renewal
         public TimeSpan Renewal(ILease leaseInfo)

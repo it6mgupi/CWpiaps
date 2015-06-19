@@ -8,7 +8,6 @@ namespace TransactLib
    public class TransactWKOSC : MarshalByRefObject
    {
         string mod;
-        TransactWKOST trwst;
         public TransactWKOSC()
 	    {
             mod = "WKOSingleCall";

@@ -17,13 +17,15 @@ namespace TransactCli
     {
         TransactCAO Transact;
         TransactWKOST SingleTon1;
+        ISponsor m_CAOSponsor;
+        ISponsor m_STSponsor;
+
         string PName;
         string Salary;
         string Age;
         string ZIP;
         string City;
         string IndPlantNum;
-        IpcClientChannel channel;
 
         public MainForm()
         {
@@ -35,59 +37,55 @@ namespace TransactCli
 
             try
             { 
-                Transact = new TransactCAO();
+                
+                m_CAOSponsor = new XSponsor();
+                m_STSponsor = new CliSTSponsor();
 
-                ISponsor m_CAOSponsor = new XSponsor();
-                ISponsor m_STSponsor = new CliSTSponsor();
+                using (Transact = new TransactCAO())
+                {
 
-                // Register the client side sponsor
-                ILease lease = (ILease)Transact.InitializeLifetimeService();
-                lease.Register(m_CAOSponsor);
+                    ILease lease = (ILease)RemotingServices.GetLifetimeService(Transact);
+                    lease.Register(m_CAOSponsor);
 
-                SingleTon1 = (TransactWKOST)Activator.GetObject(typeof(TransactWKOST), "tcp://localhost:13000/StURI.rem");
-                //ILease leaseInfo1 = (ILease)SingleTon1.InitializeLifetimeService();
-                ILease leaseInfo1 = (ILease)SingleTon1.GetLifetimeService();
-                leaseInfo1.Register(m_STSponsor);
 
-                //SingleTon1.LeaseCashe.Add(m_CAOSponsor);
-                //SingleTon1.LeaseCashe.Add(m_STSponsor);
+                    // Register the client side sponsor
+                    //ILease lease = (ILease)Transact.InitializeLifetimeService();
+                    //lease.Register(m_CAOSponsor);
 
-                // Registering client IPC Channel
-                WellKnownClientTypeEntry typeentry =
-                            new WellKnownClientTypeEntry(typeof(TransactWKOSC),
-                            "ipc://ServerChannel/ScURI.rem");
+                    SingleTon1 = (TransactWKOST)Activator.GetObject(typeof(TransactWKOST), "tcp://localhost:13000/StURI.rem");
+                    if (SingleTon1 == null)
+                    {
+                        MessageBox.Show("SingleTon1 == null");
+                    }
+                    ILease leaseInfo1 = (ILease)SingleTon1.InitializeLifetimeService();
+                    //ILease leaseInfo1 = (ILease)SingleTon1.GetLifetimeService();
+                    leaseInfo1.Register(m_STSponsor);
 
-                typeentry.ApplicationUrl = "ipc://ServerChannel/ScURI.rem";
+                    SingleTon1.SponsorsList.Add(m_CAOSponsor);
+                    SingleTon1.SponsorsList.Add(m_STSponsor);
 
-                BinaryClientFormatterSinkProvider sinkprovider = new
-                                    BinaryClientFormatterSinkProvider();
 
-                IDictionary properties = new Hashtable();
-                properties["name"] = "TcpBinary";
-                properties["port"] = 0;
+                    AppConsoleTV.Text = AppConsoleTV.Text + "----Client application logging started----\n";
 
-                BinaryServerFormatterSinkProvider provider = new
-                                    BinaryServerFormatterSinkProvider();
+                    // Adding new entries to log
+                    AppConsoleTV.Text = AppConsoleTV.Text + "CAO called\n";
 
-                provider.TypeFilterLevel = TypeFilterLevel.Full;
-
-                //Create an IPC client channel.
-                channel = new IpcClientChannel(properties, sinkprovider);
-                ChannelServices.RegisterChannel(channel, true);
-
-                AppConsoleTV.Text = AppConsoleTV.Text + "----Client application logging started----\n";
-
-                // Adding new entries to log
-			    AppConsoleTV.Text = AppConsoleTV.Text + "CAO called\n";
-
-                UpdateObjectsList();
+                    UpdateObjectsList();
+                }
             }
             // If a server is down for some reason          
-            catch (System.Net.WebException ex)
+            catch (Exception ex)
             {
-                MessageBox.Show("Error: cannot connect to server: ", ex.Message);
+                //MessageBox.Show(ex.Message, "Error: cannot connect to server: ");
                 this.Close();
             }
+        }
+
+        void OnClosed(object sender, EventArgs e)
+        {
+            //Unegister the sponsor
+            ILease lease = (ILease)RemotingServices.GetLifetimeService(Transact);
+            lease.Unregister(m_CAOSponsor);
         }
 
         // Acquiring input from textBoxes in client

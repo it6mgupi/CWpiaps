@@ -1,0 +1,105 @@
+/////////////  RemoteServerHost.exe.config : the host configuration file  ////////
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <system.runtime.remoting>
+    <application>
+      <service>
+         <activated  type="RemoteServer.MyCAO,ServerAssembly"/>
+      </service>
+      <channels>
+         <channel ref="tcp" port="8005">
+            <serverProviders>
+               <formatter ref="soap"   typeFilterLevel="Full"/>
+               <formatter ref="binary" typeFilterLevel="Full"/>
+            </serverProviders>
+         </channel>
+      </channels> 
+    </application>
+  </system.runtime.remoting>
+</configuration>
+/////////////////////   ServerAssembly class library  ////////////////////////////
+namespace RemoteServer
+{
+   public class MyCAO : MarshalByRefObject
+   {
+      int m_Counter = 0;
+      public void Count( )
+      {
+         m_Counter++;
+         string appName = AppDomain.CurrentDomain.FriendlyName;
+         MessageBox.Show("Counter value is " + m_Counter,appName);
+      }     
+   }
+}
+////////////////  Client.exe.config: the client configuration file  //////////////
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+   <system.runtime.remoting>
+      <application>
+         <client url="tcp://localhost:8005">
+            <activated  type="RemoteServer.MyCAO,ServerAssembly"/>
+         </client>
+         <channels>
+            <channel ref="tcp" port="0">
+             <serverProviders>
+                  <formatter ref="soap" typeFilterLevel="Full"/>
+                  <formatter ref="binary" typeFilterLevel="Full"/>
+               </serverProviders>
+            </channel>
+         </channels>
+      </application>
+   </system.runtime.remoting>
+</configuration>
+///////////////////////////  Client EXE assembly  ////////////////////////////////
+using System.Runtime.Remoting.Lifetime;
+  
+public class MySponsor : MarshalByRefObject,ISponsor
+{
+   public TimeSpan Renewal(ILease lease)
+   {
+      Debug.Assert(lease.CurrentState == LeaseState.Active);
+  
+      return lease.InitialLeaseTime;
+   }
+}
+  
+using RemoteServer;
+  
+partial class ClientForm : Form
+{
+   Button m_CallButton;
+  
+   ISponsor m_Sponsor;
+   MyCAO m_MyCAO;
+  
+   public ClientForm( )
+   {
+      InitializeComponent( );
+  
+      m_Sponsor = new MySponsor( );
+      m_MyCAO = new MyCAO( );
+  
+      //Register the sponsor
+      ILease lease = (ILease)RemotingServices.GetLifetimeService(m_MyCAO);
+      lease.Register(m_Sponsor);
+   }
+   void InitializeComponent( )
+   {...}
+  
+   static void Main( )
+   {
+      RemotingConfigurationEx.Configure( );
+  
+      Application.Run(new ClientForm( ));
+   }
+   void OnCall(object sender,EventArgs e)
+   {
+      m_MyCAO.Count( );
+   }
+   void OnClosed(object sender,EventArgs e)
+   {
+      //Unegister the sponsor
+      ILease lease = (ILease)RemotingServices.GetLifetimeService(m_MyCAO);
+      lease.Unregister(m_Sponsor);
+   }
+}

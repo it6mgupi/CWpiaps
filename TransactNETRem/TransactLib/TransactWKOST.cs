@@ -10,40 +10,58 @@ namespace TransactLib
     {
         string mod;
         public List<RecordDataObject> RecordsData;
-        public List<ISponsor> LeaseCashe;
+        public List<ISponsor> SponsorsList;
 
         public override object InitializeLifetimeService()
         {
+            ISponsor s = new Sponsor();
             // Call base class version
             ILease leaseInfo = (ILease)base.InitializeLifetimeService();
+            Console.WriteLine("singletone lifetime: " + leaseInfo.SponsorshipTimeout);
+            // Регистрируем спонсора
+            leaseInfo.Register(s);
 
-            // Register a CustomerSponsor object as a sponsor.
-            leaseInfo.Register(new Sponsor());
-
-            /*while(LeaseCashe.Count > 0){
-            for (int i = 0; i <= LeaseCashe.Count; i++)
+            while(SponsorsList.Count > 0){
+            for (int i = 0; i < SponsorsList.Count; i++)
             {
                 try
                 {
-                    LeaseCashe[i].Renewal(leaseInfo);
+                    SponsorsList[i].Renewal(leaseInfo);
                 }
                 catch (Exception ex)
                 {
-                    LeaseCashe.RemoveAt(i);
+                    Console.WriteLine(ex.Message);
+                    SponsorsList.RemoveAt(i);
                 }
             }
-            }*/
+            }
 
             return leaseInfo;
         }
 
         public TransactWKOST()
         {
+            SponsorsList = new List<ISponsor>();
+            Console.WriteLine("WKO Singleton constructor called");
+
             mod = "WKOSingleton";
             Logger.Info("WKO Singleton constructor called", mod);
 
             //Creating persistent (constant) object 
             RecordsData = new List<RecordDataObject>();
+        }
+
+        public void Dispose()
+        {
+            // Dispose(true);
+            Console.WriteLine("CAO Dispose called");
+            GC.SuppressFinalize(this);
+        }
+
+        ~TransactWKOST()
+        {
+            Dispose();
+            Console.WriteLine("WKO Singleton destructor called");
         }
 
         public List<RecordDataObject> GetPersistentData()
@@ -55,12 +73,5 @@ namespace TransactLib
         {
             RecordsData = NewList;
         }
-
-        public void Dispose() {
-           // Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-
     }
 }

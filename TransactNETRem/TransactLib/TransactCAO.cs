@@ -43,11 +43,15 @@ namespace TransactLib
             RecordsDataChangeTransaction = new List<string>();
             try
             {
-                //TransactWKOST trwst = new TransactWKOST(); 
-                Refresh();
+                using (TransactWKOST trwst = new TransactWKOST())
+                {
+                    Refresh();
+                }
             }
             catch(Exception ex) 
-            { 
+            {
+
+                Console.WriteLine("TransactCAO() exception: " + ex.Message);
                 //TransactWKOST trwst = new TransactWKOST(); //CurrentRecDat = trwst.GetPersistentData();
             }
         }
@@ -224,7 +228,14 @@ namespace TransactLib
         public void Dispose()
         {
             // Dispose(true);
+            Console.WriteLine("CAO Dispose called");
             GC.SuppressFinalize(this);
+        }
+
+        ~TransactCAO()
+        {
+            Dispose();
+            Console.WriteLine("~TransactCAO()");
         }
     }
 }

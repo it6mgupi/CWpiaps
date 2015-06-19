@@ -6,7 +6,7 @@ using System.Text;
 
 namespace TransactLib
 {
-    public class Sponsor : ISponsor
+    public class Sponsor : MarshalByRefObject, ISponsor
     {
           private int mRenewCount = 0;  
            // Implements ISponsor.Renewal
