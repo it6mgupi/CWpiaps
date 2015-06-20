@@ -31,7 +31,6 @@ namespace TransactCli
 			string conffile = "TransactCli.exe.config";
 			RemotingConfiguration.Configure (conffile, false);
 
-            /*
             // Registering client IPC Channel
             WellKnownClientTypeEntry typeentry =
                         new WellKnownClientTypeEntry(typeof(TransactWKOSC),
@@ -54,7 +53,6 @@ namespace TransactCli
             //Create an IPC client channel.
             channel = new IpcClientChannel(properties, sinkprovider);
             ChannelServices.RegisterChannel(channel, true);
-            */
 
             try
             { 
