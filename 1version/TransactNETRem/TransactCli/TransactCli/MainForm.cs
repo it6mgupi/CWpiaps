@@ -21,7 +21,7 @@ namespace TransactCli
         string ZIP;
         string City;
         string IndPlantNum;
-        //IpcClientChannel channel;
+        IpcClientChannel channel;
 
         public MainForm()
         {
@@ -30,7 +30,8 @@ namespace TransactCli
 			// Load the .NET Remoting configuration file
 			string conffile = "TransactCli.exe.config";
 			RemotingConfiguration.Configure (conffile, false);
-/*
+
+            /*
             // Registering client IPC Channel
             WellKnownClientTypeEntry typeentry =
                         new WellKnownClientTypeEntry(typeof(TransactWKOSC),
@@ -49,10 +50,11 @@ namespace TransactCli
                                 BinaryServerFormatterSinkProvider();
 
             provider.TypeFilterLevel = TypeFilterLevel.Full;
-*/
+
             //Create an IPC client channel.
-            //channel = new IpcClientChannel(properties, sinkprovider);
-            //ChannelServices.RegisterChannel(channel, true);
+            channel = new IpcClientChannel(properties, sinkprovider);
+            ChannelServices.RegisterChannel(channel, true);
+            */
 
             try
             { 

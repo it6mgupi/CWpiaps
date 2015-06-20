@@ -43,10 +43,10 @@ namespace TransactLib
             RecordsDataChangeTransaction = new List<string>();
             try
             {
-                using (TransactWKOST trwst = new TransactWKOST())
-                {
+                TransactWKOST trwst = new TransactWKOST();
+                
                     Refresh();
-                }
+                
             }
             catch(Exception ex) 
             {

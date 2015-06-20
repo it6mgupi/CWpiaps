@@ -40,8 +40,8 @@ namespace TransactCli
                 m_CAOSponsor = new XSponsor();
                 m_STSponsor = new CliSTSponsor();
 
-                using (transactCAO = new TransactCAO())
-                {
+                transactCAO = new TransactCAO();
+                
 
                     ILease lease = (ILease)RemotingServices.GetLifetimeService(transactCAO);
                     lease.Register(m_CAOSponsor);
@@ -61,7 +61,7 @@ namespace TransactCli
                     AppConsoleTV.Text = AppConsoleTV.Text + "CAO called\n";
 
                     UpdateObjectsList();
-                }
+                
             }
             // If a server is down for some reason          
             catch (Exception ex)
